@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Google Fonts para una tipografía moderna -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.21.1/video-js.css" rel="stylesheet" />
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -24,11 +26,18 @@
         <section class="hero">
             <div class="container">
                 <div class="video-container">
-                    <iframe id="liveStream" src="https://v1.bestsolaris.com/solaris.php?postid=67641&autoplay=1" 
-                            frameborder="0" 
-                            allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <video
+                        id="liveStream"
+                        class="video-js vjs-default-skin"
+                        controls
+                        preload="auto"
+                        muted
+                        autoplay
+                        playsinline
+                        data-setup='{}'>
+                        <source src="https://drogon.tv/w/RKE3BZpS3oUrgmQghm" type="application/x-mpegURL">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
                 </div>
                 <div class="info">
                     <h1>Bienvenido a FightFTW</h1>
@@ -48,7 +57,9 @@
         </div>
     </footer>
 
-    <!-- Enlace al archivo JavaScript -->
+    <!-- Video.js Library -->
+    <script src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+    <!-- Scripts Personalizados -->
     <script src="script.js"></script>
 </body>
 </html>
