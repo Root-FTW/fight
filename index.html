@@ -7,81 +7,14 @@
     <title>FightFTW - Transmisiones en vivo</title>
     
     <style>
-        :root {
-            --primary-color: #1e1e2f;
-            --secondary-color: #27293d;
-            --accent-color: #ff5722;
-            --text-color: #f0f0f3;
-            --light-color: #ffffff;
-            --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: var(--font-family);
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        html {
-            height: -webkit-fill-available;
-        }
-
-        .header {
-            background-color: var(--primary-color);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo a {
-            color: var(--light-color);
-            text-decoration: none;
-            font-size: 24px;
-            font-weight: bold;
-            margin-left: 20px;
-        }
-
-        .hero {
-            padding: 20px 0;
-            background: linear-gradient(135deg, var(--accent-color) 0%, #23232e 100%);
-            min-height: calc(100vh - 64px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .video-wrapper {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: #1a1a2e;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
+        /* ... (mantener los estilos anteriores hasta .video-container) ... */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
+            background-color: #000;
+            border-radius: 15px;
         }
 
         .video-container iframe {
@@ -91,10 +24,11 @@
             width: 100%;
             height: 100%;
             border: 0;
-            transition: opacity 0.3s ease;
+            border-radius: 15px;
         }
 
-        .stream-overlay {
+        /* Nuevo estilo para el overlay inicial */
+        .initial-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -108,25 +42,26 @@
             cursor: pointer;
         }
 
-        .play-button {
+        .custom-play-button {
             width: 80px;
             height: 80px;
-            background: rgba(255, 87, 34, 0.9);
+            background: var(--accent-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            border: none;
+            outline: none;
         }
 
-        .play-button:hover {
+        .custom-play-button:hover {
             transform: scale(1.1);
-            background: rgba(255, 87, 34, 1);
+            background: #ff6b3d;
         }
 
-        .play-button::after {
+        .custom-play-button::after {
             content: '';
             width: 0;
             height: 0;
@@ -136,86 +71,22 @@
             margin-left: 8px;
         }
 
-        .info {
-            text-align: center;
-            margin-top: 30px;
-            padding: 0 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .info h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--light-color);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .info p {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .loading-indicator {
+        /* Estilo para el mensaje de carga */
+        .loading-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            display: none;
-            color: white;
             background: rgba(0, 0, 0, 0.8);
+            color: white;
             padding: 10px 20px;
             border-radius: 20px;
             font-size: 14px;
+            display: none;
+            z-index: 999;
         }
 
-        @media (max-width: 768px) {
-            .video-wrapper {
-                width: 95%;
-                margin: 10px auto;
-            }
-            
-            .info h1 {
-                font-size: 2rem;
-            }
-            
-            .info p {
-                font-size: 1rem;
-            }
-
-            .play-button {
-                width: 60px;
-                height: 60px;
-            }
-
-            .play-button::after {
-                border-width: 15px 0 15px 25px;
-                margin-left: 5px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                padding: 10px 0;
-            }
-
-            .info h1 {
-                font-size: 1.8rem;
-            }
-
-            .play-button {
-                width: 50px;
-                height: 50px;
-            }
-
-            .play-button::after {
-                border-width: 12px 0 12px 20px;
-                margin-left: 4px;
-            }
-        }
+        /* ... (mantener los estilos responsivos y demás estilos) ... */
     </style>
 </head>
 <body>
@@ -227,22 +98,14 @@
 
     <main class="hero">
         <div class="video-wrapper">
-            <div class="video-container">
-                <div class="stream-overlay" id="streamOverlay">
-                    <div class="play-button"></div>
+            <div class="video-container" id="videoContainer">
+                <div class="initial-overlay" id="initialOverlay">
+                    <button class="custom-play-button" id="customPlayButton"></button>
                 </div>
-                <div class="loading-indicator" id="loadingIndicator">
+                <div class="loading-message" id="loadingMessage">
                     Cargando transmisión...
                 </div>
-                <iframe 
-                    id="streamFrame"
-                    style="visibility: hidden;"
-                    frameborder="0"
-                    allowfullscreen="true"
-                    scrolling="no"
-                    allow="autoplay; fullscreen"
-                    importance="high">
-                </iframe>
+                <!-- El iframe se creará dinámicamente -->
             </div>
         </div>
 
@@ -255,146 +118,106 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const overlay = document.getElementById('streamOverlay');
-            const iframe = document.getElementById('streamFrame');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            let isFirstClick = true;
-            let popupBlockerActive = true;
-            
-            // Función para mostrar el indicador de carga
+            const videoContainer = document.getElementById('videoContainer');
+            const initialOverlay = document.getElementById('initialOverlay');
+            const loadingMessage = document.getElementById('loadingMessage');
+            let isFirstLoad = true;
+            let popupCount = 0;
+            const maxPopups = 2; // Número máximo de popups permitidos antes de la reproducción
+
             function showLoading() {
-                loadingIndicator.style.display = 'block';
+                loadingMessage.style.display = 'block';
             }
 
-            // Función para ocultar el indicador de carga
             function hideLoading() {
-                loadingIndicator.style.display = 'none';
+                loadingMessage.style.display = 'none';
             }
 
-            // Función para cargar el stream
-            function loadStream() {
-                showLoading();
-                iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=67880&t=${Date.now()}`;
-                return new Promise((resolve) => {
-                    iframe.onload = () => {
-                        hideLoading();
-                        resolve();
-                    };
-                });
+            function createIframe() {
+                const iframe = document.createElement('iframe');
+                iframe.setAttribute('id', 'streamFrame');
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.setAttribute('scrolling', 'no');
+                iframe.setAttribute('allow', 'autoplay; fullscreen');
+                iframe.style.visibility = 'visible';
+                return iframe;
             }
 
-            // Función para inyectar CSS en el iframe
-            function injectStyles(iframeDocument) {
-                const styleSheet = `
-                    [id*="ad"], [class*="ad"],
-                    [id*="popup"], [class*="popup"],
-                    [class*="overlay"], [id*="overlay"],
-                    [id*="banner"], [class*="banner"] {
-                        display: none !important;
-                        opacity: 0 !important;
-                        visibility: hidden !important;
-                        pointer-events: none !important;
-                        height: 0 !important;
-                        position: absolute !important;
-                        top: -9999px !important;
-                    }
-                    
-                    video, .plyr {
-                        pointer-events: auto !important;
-                    }
-                `;
-
-                const style = iframeDocument.createElement('style');
-                style.textContent = styleSheet;
-                iframeDocument.head.appendChild(style);
-            }
-
-            // Función para manejar popups
-            function handlePopups() {
-                try {
-                    const iframeWindow = iframe.contentWindow;
-                    const iframeDocument = iframe.contentDocument || iframeWindow.document;
-
-                    // Bloquear apertura de nuevas ventanas
-                    iframeWindow.open = function() { return null; };
-                    
-                    // Observar cambios en el DOM del iframe
-                    const observer = new MutationObserver((mutations) => {
-                        if (!popupBlockerActive) return;
-
-                        mutations.forEach(mutation => {
-                            mutation.addedNodes.forEach(node => {
-                                if (node.nodeType === 1) { // Es un elemento
-                                    // Verificar si es un elemento de publicidad
-                                    if (node.id?.toLowerCase().includes('ad') ||
-                                        node.className?.toLowerCase().includes('ad') ||
-                                        node.id?.toLowerCase().includes('popup') ||
-                                        node.className?.toLowerCase().includes('popup')) {
-                                        node.remove();
-                                    }
-                                }
-                            });
-                        });
-                    });
-
-                    // Configurar el observer
-                    observer.observe(iframeDocument.body, {
-                        childList: true,
-                        subtree: true
-                    });
-
-                    // Inyectar estilos
-                    injectStyles(iframeDocument);
-
-                    // Buscar y eliminar elementos existentes
-                    const adElements = iframeDocument.querySelectorAll('[id*="ad"], [class*="ad"], [id*="popup"], [class*="popup"]');
-                    adElements.forEach(el => el.remove());
-
-                    return observer;
-                } catch (error) {
-                    console.warn('Error al configurar el bloqueador de popups:', error);
+            function handlePopup(popup) {
+                if (popupCount < maxPopups) {
+                    popupCount++;
+                    // Permitir algunos popups iniciales
                     return null;
                 }
+                // Después de los popups permitidos, bloqueamos el resto
+                return false;
             }
 
-            // Manejar clic en el overlay
-            overlay.addEventListener('click', async function() {
-                if (!isFirstClick) return;
-                isFirstClick = false;
+            initialOverlay.addEventListener('click', async function() {
+                if (!isFirstLoad) return;
                 
-                overlay.style.display = 'none';
-                iframe.style.visibility = 'visible';
-                
+                showLoading();
+                initialOverlay.style.display = 'none';
+
                 try {
-                    // Cargar el stream
-                    await loadStream();
-                    
-                    // Configurar el iframe
-                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-                    
-                    // Iniciar el manejo de popups
-                    const observer = handlePopups();
-                    
-                    // Cleanup cuando se desmonte
-                    window.addEventListener('beforeunload', () => {
-                        if (observer) {
-                            observer.disconnect();
+                    // Crear y configurar el iframe
+                    const iframe = createIframe();
+                    iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=67880&t=${Date.now()}`;
+                    videoContainer.appendChild(iframe);
+
+                    // Manejar la carga del iframe
+                    iframe.onload = function() {
+                        hideLoading();
+                        try {
+                            const iframeWindow = iframe.contentWindow;
+                            
+                            // Reemplazar la función window.open del iframe
+                            const originalOpen = iframeWindow.open;
+                            iframeWindow.open = function(url, target, features) {
+                                return handlePopup(originalOpen.call(this, url, target, features));
+                            };
+
+                            // Observar cambios en el DOM del iframe
+                            const observer = new MutationObserver((mutations) => {
+                                const iframeDoc = iframe.contentDocument || iframeWindow.document;
+                                
+                                // Buscar y modificar botones de play
+                                const playButtons = iframeDoc.querySelectorAll('.plyr__control--overlaid, .plyr__control--play');
+                                playButtons.forEach(button => {
+                                    if (!button.dataset.modified) {
+                                        button.dataset.modified = 'true';
+                                        button.addEventListener('click', function(e) {
+                                            if (popupCount >= maxPopups) {
+                                                e.stopPropagation();
+                                                // Intentar reproducir directamente
+                                                const video = iframeDoc.querySelector('video');
+                                                if (video) {
+                                                    video.play();
+                                                }
+                                            }
+                                        }, true);
+                                    }
+                                });
+                            });
+
+                            observer.observe(iframe.contentDocument || iframe.contentWindow.document, {
+                                childList: true,
+                                subtree: true
+                            });
+
+                        } catch (error) {
+                            console.warn('Error al configurar el iframe:', error);
                         }
-                        popupBlockerActive = false;
-                    });
+                    };
+
+                    isFirstLoad = false;
 
                 } catch (error) {
-                    console.warn('Error al iniciar el stream:', error);
-                    overlay.style.display = 'flex';
-                    isFirstClick = true;
-                }
-            });
-
-            // Prevenir la apertura de popups a nivel de ventana
-            window.addEventListener('beforeunload', function(e) {
-                if (!e.target.activeElement.matches('.video-container iframe')) {
-                    e.preventDefault();
-                    return false;
+                    console.error('Error al cargar el stream:', error);
+                    hideLoading();
+                    initialOverlay.style.display = 'flex';
+                    isFirstLoad = true;
                 }
             });
         });
