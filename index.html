@@ -6,9 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>FightFTW - Transmisiones en vivo</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --primary-color: #1e1e2f;
@@ -16,31 +13,20 @@
             --accent-color: #ff5722;
             --text-color: #f0f0f3;
             --light-color: #ffffff;
-            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: var(--font-family);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--secondary-color);
             color: var(--text-color);
             line-height: 1.6;
             min-height: 100vh;
-            min-height: -webkit-fill-available;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        html {
-            height: -webkit-fill-available;
         }
 
         .header {
@@ -57,37 +43,31 @@
             text-decoration: none;
             font-size: 24px;
             font-weight: bold;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
+            margin-left: 20px;
         }
 
         .hero {
             padding: 20px 0;
             background: linear-gradient(135deg, var(--accent-color) 0%, #23232e 100%);
-            min-height: calc(100vh - 60px);
+            min-height: calc(100vh - 64px);
             display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
         .video-wrapper {
-            width: 100%;
+            width: 90%;
             max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
+            margin: 20px auto;
+            background-color: #1a1a2e;
             border-radius: 15px;
             overflow: hidden;
-            background-color: rgba(0, 0, 0, 0.2);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
         }
@@ -99,28 +79,12 @@
             width: 100%;
             height: 100%;
             border: 0;
-            border-radius: 15px;
-        }
-
-        .fallback-message {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            background: rgba(30, 30, 47, 0.9);
-            color: var(--light-color);
-            z-index: 2;
         }
 
         .info {
             text-align: center;
             margin-top: 30px;
+            padding: 0 20px;
         }
 
         .info h1 {
@@ -135,10 +99,9 @@
             margin: 0 auto;
         }
 
-        /* Estilos responsivos */
         @media (max-width: 768px) {
-            .hero {
-                padding: 10px 0;
+            .video-wrapper {
+                width: 95%;
             }
             
             .info h1 {
@@ -149,110 +112,61 @@
                 font-size: 1rem;
             }
         }
-
-        /* Mejoras para iOS */
-        @supports (-webkit-touch-callout: none) {
-            .video-container {
-                transform: translate3d(0, 0, 0);
-            }
-        }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="container">
-            <div class="logo">
-                <a href="#">FightFTW</a>
-            </div>
+        <div class="logo">
+            <a href="#">FightFTW</a>
         </div>
     </header>
 
-    <main role="main">
-        <section class="hero">
-            <div class="container">
-                <div class="video-wrapper">
-                    <div class="video-container" id="videoContainer">
-                        <iframe 
-                            id="streamIframe"
-                            src="https://v3.bestsolaris.com/solaris.php?postid=67880"
-                            allow="autoplay; fullscreen"
-                            allowfullscreen
-                            scrolling="no"
-                            allowtransparency>
-                        </iframe>
-                        <div class="fallback-message" id="fallbackMessage">
-                            <p>Tu dispositivo no soporta la transmisión en vivo. 
-                               <a href="https://v3.bestsolaris.com/solaris.php?postid=67880" 
-                                  target="_blank" 
-                                  rel="noopener noreferrer">
-                                  Haz clic aquí
-                               </a> 
-                               para verlo en una nueva ventana.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info">
-                    <h1>Bienvenido a FightFTW</h1>
-                    <p>Disfruta de nuestra transmisión en vivo de eventos de lucha en tiempo real. 
-                       ¡Mantente conectado para no perderte ningún combate!</p>
-                </div>
+    <main class="hero">
+        <div class="video-wrapper">
+            <div class="video-container">
+                <!-- Iframe con parámetros optimizados -->
+                <iframe 
+                    src="https://v3.bestsolaris.com/solaris.php?postid=67880"
+                    frameborder="0"
+                    width="100%"
+                    height="100%"
+                    allowfullscreen="true"
+                    scrolling="no"
+                    allow="autoplay; fullscreen"
+                    referrerpolicy="no-referrer"
+                    loading="eager"
+                    importance="high">
+                </iframe>
             </div>
-        </section>
+        </div>
+
+        <div class="info">
+            <h1>Bienvenido a FightFTW</h1>
+            <p>Disfruta de nuestra transmisión en vivo de eventos de lucha en tiempo real. 
+               ¡Mantente conectado para no perderte ningún combate!</p>
+        </div>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.getElementById('streamIframe');
-            const fallbackMessage = document.getElementById('fallbackMessage');
+            const iframe = document.querySelector('iframe');
             
-            // Detectar el sistema operativo y navegador
-            const userAgent = navigator.userAgent.toLowerCase();
-            const isiOS = /iphone|ipad|ipod/.test(userAgent);
-            const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
-            
-            // Añadir atributos específicos para iOS/Safari
-            if (isiOS || isSafari) {
-                iframe.setAttribute('playsinline', '');
-                iframe.setAttribute('webkit-playsinline', '');
-            }
-            
-            // Manejar errores de carga del iframe
-            iframe.onerror = function() {
-                showFallback();
-            };
-            
-            // Detectar si el iframe se carga correctamente
-            iframe.onload = function() {
-                // Ocultar mensaje de fallback si el iframe carga bien
-                fallbackMessage.style.display = 'none';
-                
-                // Verificar si el iframe está realmente accesible
-                try {
-                    // Intentar acceder al contenido del iframe
-                    // Esto fallará si hay problemas de seguridad o el contenido no carga
-                    if (iframe.contentWindow) {
-                        const iframeDoc = iframe.contentWindow.document;
-                    }
-                } catch (error) {
-                    console.warn('El iframe no pudo cargarse correctamente:', error);
-                    showFallback();
+            // Forzar recarga del iframe si no se carga correctamente
+            setTimeout(() => {
+                if (!iframe.contentWindow || !iframe.contentWindow.document) {
+                    iframe.src = iframe.src;
                 }
+            }, 2000);
+
+            // Manejar errores de carga
+            iframe.onerror = function() {
+                window.open(iframe.src, '_blank');
             };
-            
-            // Función para mostrar el mensaje de fallback
-            function showFallback() {
-                fallbackMessage.style.display = 'flex';
-            }
-            
-            // Manejar errores de red
-            window.addEventListener('offline', showFallback);
-            window.addEventListener('online', function() {
-                fallbackMessage.style.display = 'none';
-                // Recargar el iframe cuando vuelva la conexión
-                iframe.src = iframe.src;
-            });
+
+            // Intentar forzar la carga completa
+            iframe.onload = function() {
+                iframe.style.visibility = 'visible';
+            };
         });
     </script>
 </body>
