@@ -259,149 +259,167 @@
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const videoContainer = document.getElementById('videoContainer');
-            const initialOverlay = document.getElementById('initialOverlay');
-            const loadingMessage = document.getElementById('loadingMessage');
-            const popupCounter = document.getElementById('popupCounter');
-            let isFirstLoad = true;
-            let popupWindows = [];
-            let popupCount = 0;
-            let autoCloseTimer = null;
-            const POPUP_CLOSE_DELAY = 1; // Tiempo en ms antes de cerrar popups
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const videoContainer = document.getElementById('videoContainer');
+        const initialOverlay = document.getElementById('initialOverlay');
+        const loadingMessage = document.getElementById('loadingMessage');
+        let isFirstLoad = true;
+        let originalTab = null;
 
-            function showLoading() {
-                loadingMessage.style.display = 'block';
-            }
+        function showLoading() {
+            loadingMessage.style.display = 'block';
+        }
 
-            function hideLoading() {
-                loadingMessage.style.display = 'none';
-            }
+        function hideLoading() {
+            loadingMessage.style.display = 'none';
+        }
 
-            function updatePopupCounter() {
-                popupCounter.textContent = `Cerrando ventanas: ${popupCount}`;
-                popupCounter.style.display = 'block';
-                setTimeout(() => {
-                    popupCounter.style.display = 'none';
-                }, 2000);
-            }
+        function handleNewTab() {
+            // Guardar referencia a la pestaña original
+            originalTab = window;
 
-            function closePopups() {
-                popupWindows.forEach((popup, index) => {
-                    try {
-                        if (!popup.closed) {
-                            popup.close();
-                            popupCount++;
-                            updatePopupCounter();
-                        }
-                    } catch (e) {
-                        console.warn(`Error al cerrar popup ${index}:`, e);
-                    }
-                });
-                popupWindows = [];
-            }
-
-            function createIframe() {
-                const iframe = document.createElement('iframe');
-                iframe.setAttribute('id', 'streamFrame');
-                iframe.setAttribute('frameborder', '0');
-                iframe.setAttribute('allowfullscreen', 'true');
-                iframe.setAttribute('scrolling', 'no');
-                iframe.setAttribute('allow', 'autoplay; fullscreen');
-                iframe.style.visibility = 'visible';
-                return iframe;
-            }
-
-            function handleWindowOpen(url, target, features) {
-                // Crear la ventana emergente
-                const popup = window.open(url, target, features);
-                if (popup) {
-                    popupWindows.push(popup);
-                    
-                    // Programar el cierre automático
-                    clearTimeout(autoCloseTimer);
-                    autoCloseTimer = setTimeout(() => {
-                        closePopups();
-                    }, POPUP_CLOSE_DELAY);
-                }
-                return popup;
-            }
-
-            initialOverlay.addEventListener('click', async function() {
-                if (!isFirstLoad) return;
+            // Modificar el comportamiento de window.open
+            const originalOpen = window.open;
+            window.open = function(url, target, features) {
+                // Mantener el foco en la pestaña original
+                originalTab.focus();
                 
-                showLoading();
-                initialOverlay.style.display = 'none';
-
+                // Intentar forzar el evento en la misma ventana
                 try {
-                    const iframe = createIframe();
-                    iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=67880&t=${Date.now()}`;
-                    videoContainer.appendChild(iframe);
-
-                    iframe.onload = function() {
-                        hideLoading();
-                        try {
-                            const iframeWindow = iframe.contentWindow;
-                            
-                            // Reemplazar window.open
-                            const originalOpen = iframeWindow.open;
-                            iframeWindow.open = function(url, target, features) {
-                                return handleWindowOpen(url, target, features);
-                            };
-
-                            // Observer para modificar el comportamiento del player
-                            const observer = new MutationObserver(() => {
-                                try {
-                                    const iframeDoc = iframe.contentDocument || iframeWindow.document;
-                                    
-                                    // Modificar botones de play
-                                    const playButtons = iframeDoc.querySelectorAll('.plyr__control--overlaid, .plyr__control--play');
-                                    playButtons.forEach(button => {
-                                        if (!button.dataset.modified) {
-                                            button.dataset.modified = 'true';
-                                            button.addEventListener('click', function() {
-                                                // Programar cierre de popups después del clic
-                                                setTimeout(closePopups, POPUP_CLOSE_DELAY);
-                                            }, true);
-                                        }
-                                    });
-
-                                    // Intentar reproducir el video automáticamente
-                                    const video = iframeDoc.querySelector('video');
-                                    if (video && video.paused) {
-                                        video.play().catch(() => {});
-                                    }
-                                } catch (e) {
-                                    console.warn('Error al modificar el player:', e);
-                                }
-                            });
-
-                            observer.observe(iframeWindow.document.body, {
-                                childList: true,
-                                subtree: true
-                            });
-
-                        } catch (error) {
-                            console.warn('Error al configurar el iframe:', error);
-                        }
-                    };
-
-                    isFirstLoad = false;
-
-                } catch (error) {
-                    console.error('Error al cargar el stream:', error);
-                    hideLoading();
-                    initialOverlay.style.display = 'flex';
-                    isFirstLoad = true;
+                    return originalOpen.call(this, 'about:blank', '_self');
+                } catch (e) {
+                    console.warn('Error al manejar nueva pestaña:', e);
+                    return null;
                 }
-            });
+            };
+        }
 
-            // Limpieza al cerrar la página
-            window.addEventListener('beforeunload', function() {
-                closePopups();
-            });
+        function createIframe() {
+            const iframe = document.createElement('iframe');
+            iframe.setAttribute('id', 'streamFrame');
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('allow', 'autoplay; fullscreen');
+            
+            // Añadir atributos para prevenir navegación en nuevas pestañas
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+            
+            iframe.style.visibility = 'visible';
+            return iframe;
+        }
+
+        initialOverlay.addEventListener('click', async function() {
+            if (!isFirstLoad) return;
+            
+            showLoading();
+            initialOverlay.style.display = 'none';
+
+            try {
+                // Activar el manejador de nuevas pestañas
+                handleNewTab();
+
+                const iframe = createIframe();
+                
+                // Añadir parámetros para prevenir redirecciones
+                iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=67880&t=${Date.now()}&nopopup=true`;
+                
+                iframe.onload = function() {
+                    hideLoading();
+                    try {
+                        const iframeWindow = iframe.contentWindow;
+                        const iframeDoc = iframe.contentDocument || iframeWindow.document;
+
+                        // Sobrescribir funciones de navegación en el iframe
+                        iframeWindow.open = function() { return null; };
+                        
+                        // Prevenir redirecciones
+                        Object.defineProperty(iframeWindow, 'location', {
+                            get: function() { return iframeWindow.document.location; },
+                            set: function() { return false; }
+                        });
+
+                        // Observar y modificar elementos del player
+                        const observer = new MutationObserver(() => {
+                            try {
+                                // Modificar botones de play
+                                const playButtons = iframeDoc.querySelectorAll('.plyr__control--overlaid, .plyr__control--play');
+                                playButtons.forEach(button => {
+                                    if (!button.dataset.modified) {
+                                        button.dataset.modified = 'true';
+                                        button.addEventListener('click', function(e) {
+                                            // Prevenir comportamiento por defecto
+                                            e.stopPropagation();
+                                            
+                                            // Intentar reproducir el video directamente
+                                            const video = iframeDoc.querySelector('video');
+                                            if (video) {
+                                                video.play().catch(() => {});
+                                            }
+                                            
+                                            // Mantener el foco en la pestaña original
+                                            if (originalTab) {
+                                                originalTab.focus();
+                                            }
+                                        }, true);
+                                    }
+                                });
+
+                                // Inyectar CSS para prevenir clics no deseados
+                                const style = iframeDoc.createElement('style');
+                                style.textContent = `
+                                    [target="_blank"],
+                                    [onclick*="window.open"],
+                                    [href*="javascript:window.open"] {
+                                        pointer-events: none !important;
+                                    }
+                                `;
+                                iframeDoc.head.appendChild(style);
+
+                            } catch (e) {
+                                console.warn('Error al modificar el player:', e);
+                            }
+                        });
+
+                        observer.observe(iframeDoc.body, {
+                            childList: true,
+                            subtree: true,
+                            attributes: true
+                        });
+
+                    } catch (error) {
+                        console.warn('Error al configurar el iframe:', error);
+                    }
+                };
+
+                videoContainer.appendChild(iframe);
+                isFirstLoad = false;
+
+            } catch (error) {
+                console.error('Error al cargar el stream:', error);
+                hideLoading();
+                initialOverlay.style.display = 'flex';
+                isFirstLoad = true;
+            }
         });
-    </script>
+
+        // Mantener el foco en la pestaña principal
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && originalTab) {
+                originalTab.focus();
+            }
+        });
+
+        // Prevenir cambios de pestaña no deseados
+        window.addEventListener('beforeunload', function(e) {
+            if (originalTab && window !== originalTab) {
+                e.preventDefault();
+                originalTab.focus();
+                return false;
+            }
+        });
+    });
+</script>
 </body>
 </html>
