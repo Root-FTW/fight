@@ -13,20 +13,31 @@
             --accent-color: #ff5722;
             --text-color: #f0f0f3;
             --light-color: #ffffff;
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: var(--font-family);
             background-color: var(--secondary-color);
             color: var(--text-color);
             line-height: 1.6;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            height: -webkit-fill-available;
         }
 
         .header {
@@ -36,6 +47,7 @@
             top: 0;
             width: 100%;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .logo a {
@@ -79,29 +91,91 @@
             width: 100%;
             height: 100%;
             border: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stream-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 87, 34, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 87, 34, 1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 20px 0 20px 35px;
+            border-color: transparent transparent transparent white;
+            margin-left: 8px;
         }
 
         .info {
             text-align: center;
             margin-top: 30px;
             padding: 0 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .info h1 {
             font-size: 2.5rem;
             margin-bottom: 15px;
             color: var(--light-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .info p {
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            color: white;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         @media (max-width: 768px) {
             .video-wrapper {
                 width: 95%;
+                margin: 10px auto;
             }
             
             .info h1 {
@@ -110,6 +184,36 @@
             
             .info p {
                 font-size: 1rem;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+            }
+
+            .play-button::after {
+                border-width: 15px 0 15px 25px;
+                margin-left: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 10px 0;
+            }
+
+            .info h1 {
+                font-size: 1.8rem;
+            }
+
+            .play-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .play-button::after {
+                border-width: 12px 0 12px 20px;
+                margin-left: 4px;
             }
         }
     </style>
@@ -124,17 +228,19 @@
     <main class="hero">
         <div class="video-wrapper">
             <div class="video-container">
-                <!-- Iframe con parámetros optimizados -->
+                <div class="stream-overlay" id="streamOverlay">
+                    <div class="play-button"></div>
+                </div>
+                <div class="loading-indicator" id="loadingIndicator">
+                    Cargando transmisión...
+                </div>
                 <iframe 
-                    src="https://v3.bestsolaris.com/solaris.php?postid=67880"
+                    id="streamFrame"
+                    style="visibility: hidden;"
                     frameborder="0"
-                    width="100%"
-                    height="100%"
                     allowfullscreen="true"
                     scrolling="no"
                     allow="autoplay; fullscreen"
-                    referrerpolicy="no-referrer"
-                    loading="eager"
                     importance="high">
                 </iframe>
             </div>
@@ -149,24 +255,148 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.querySelector('iframe');
+            const overlay = document.getElementById('streamOverlay');
+            const iframe = document.getElementById('streamFrame');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            let isFirstClick = true;
+            let popupBlockerActive = true;
             
-            // Forzar recarga del iframe si no se carga correctamente
-            setTimeout(() => {
-                if (!iframe.contentWindow || !iframe.contentWindow.document) {
-                    iframe.src = iframe.src;
+            // Función para mostrar el indicador de carga
+            function showLoading() {
+                loadingIndicator.style.display = 'block';
+            }
+
+            // Función para ocultar el indicador de carga
+            function hideLoading() {
+                loadingIndicator.style.display = 'none';
+            }
+
+            // Función para cargar el stream
+            function loadStream() {
+                showLoading();
+                iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=67880&t=${Date.now()}`;
+                return new Promise((resolve) => {
+                    iframe.onload = () => {
+                        hideLoading();
+                        resolve();
+                    };
+                });
+            }
+
+            // Función para inyectar CSS en el iframe
+            function injectStyles(iframeDocument) {
+                const styleSheet = `
+                    [id*="ad"], [class*="ad"],
+                    [id*="popup"], [class*="popup"],
+                    [class*="overlay"], [id*="overlay"],
+                    [id*="banner"], [class*="banner"] {
+                        display: none !important;
+                        opacity: 0 !important;
+                        visibility: hidden !important;
+                        pointer-events: none !important;
+                        height: 0 !important;
+                        position: absolute !important;
+                        top: -9999px !important;
+                    }
+                    
+                    video, .plyr {
+                        pointer-events: auto !important;
+                    }
+                `;
+
+                const style = iframeDocument.createElement('style');
+                style.textContent = styleSheet;
+                iframeDocument.head.appendChild(style);
+            }
+
+            // Función para manejar popups
+            function handlePopups() {
+                try {
+                    const iframeWindow = iframe.contentWindow;
+                    const iframeDocument = iframe.contentDocument || iframeWindow.document;
+
+                    // Bloquear apertura de nuevas ventanas
+                    iframeWindow.open = function() { return null; };
+                    
+                    // Observar cambios en el DOM del iframe
+                    const observer = new MutationObserver((mutations) => {
+                        if (!popupBlockerActive) return;
+
+                        mutations.forEach(mutation => {
+                            mutation.addedNodes.forEach(node => {
+                                if (node.nodeType === 1) { // Es un elemento
+                                    // Verificar si es un elemento de publicidad
+                                    if (node.id?.toLowerCase().includes('ad') ||
+                                        node.className?.toLowerCase().includes('ad') ||
+                                        node.id?.toLowerCase().includes('popup') ||
+                                        node.className?.toLowerCase().includes('popup')) {
+                                        node.remove();
+                                    }
+                                }
+                            });
+                        });
+                    });
+
+                    // Configurar el observer
+                    observer.observe(iframeDocument.body, {
+                        childList: true,
+                        subtree: true
+                    });
+
+                    // Inyectar estilos
+                    injectStyles(iframeDocument);
+
+                    // Buscar y eliminar elementos existentes
+                    const adElements = iframeDocument.querySelectorAll('[id*="ad"], [class*="ad"], [id*="popup"], [class*="popup"]');
+                    adElements.forEach(el => el.remove());
+
+                    return observer;
+                } catch (error) {
+                    console.warn('Error al configurar el bloqueador de popups:', error);
+                    return null;
                 }
-            }, 2000);
+            }
 
-            // Manejar errores de carga
-            iframe.onerror = function() {
-                window.open(iframe.src, '_blank');
-            };
-
-            // Intentar forzar la carga completa
-            iframe.onload = function() {
+            // Manejar clic en el overlay
+            overlay.addEventListener('click', async function() {
+                if (!isFirstClick) return;
+                isFirstClick = false;
+                
+                overlay.style.display = 'none';
                 iframe.style.visibility = 'visible';
-            };
+                
+                try {
+                    // Cargar el stream
+                    await loadStream();
+                    
+                    // Configurar el iframe
+                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+                    
+                    // Iniciar el manejo de popups
+                    const observer = handlePopups();
+                    
+                    // Cleanup cuando se desmonte
+                    window.addEventListener('beforeunload', () => {
+                        if (observer) {
+                            observer.disconnect();
+                        }
+                        popupBlockerActive = false;
+                    });
+
+                } catch (error) {
+                    console.warn('Error al iniciar el stream:', error);
+                    overlay.style.display = 'flex';
+                    isFirstClick = true;
+                }
+            });
+
+            // Prevenir la apertura de popups a nivel de ventana
+            window.addEventListener('beforeunload', function(e) {
+                if (!e.target.activeElement.matches('.video-container iframe')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
         });
     </script>
 </body>
