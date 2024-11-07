@@ -1,9 +1,11 @@
+/* Variables de CSS para colores y fuentes */
 :root {
-    --primary-color: #1a1a2e;
-    --secondary-color: #16213e;
-    --accent-color: #ff4d4d;
-    --text-color: #ffffff;
-    --light-color: #e1e1e1;
+    --primary-color: #1e1e2f;
+    --secondary-color: #27293d;
+    --accent-color: #ff5722; /* Color de acento más vibrante */
+    --text-color: #f0f0f3;
+    --light-color: #ffffff;
+    --font-family: 'Inter', sans-serif;
 }
 
 * {
@@ -13,64 +15,76 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: var(--font-family);
     background-color: var(--secondary-color);
     color: var(--text-color);
+    line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Header y Logo */
-header {
+/* Contenedor */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Encabezado */
+.header {
     background-color: var(--primary-color);
-    padding: 1rem;
+    padding: 20px 0;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo a {
-    color: var(--text-color);
+    color: var(--light-color);
+    font-size: 2rem;
+    font-weight: 700;
     text-decoration: none;
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* Sección Hero */
+/* Hero Section */
 .hero {
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: var(--secondary-color);
+    padding: 100px 0 60px 0; /* Espaciado para el header fijo */
+    background: linear-gradient(135deg, var(--accent-color) 0%, #23232e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
 }
 
 .hero .container {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
 }
 
-/* Contenedor del Video */
 .video-container {
-    width: 100vw;
-    height: calc(100vh - 60px); /* Restamos la altura del header */
-    max-width: 100%;
-    position: fixed;
-    top: 60px; /* Altura del header */
-    left: 0;
-    padding: 0;
-    margin: 0;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    padding-top: 56.25%; /* Fallback para navegadores que no soportan aspect-ratio */
+    position: relative;
+    border-radius: 15px;
     overflow: hidden;
-    background-color: #000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
 
 .video-container iframe {
@@ -79,38 +93,58 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    border: 0;
+    border: none;
+    border-radius: 15px;
 }
 
-/* Loading Spinner */
-.loading {
+.fallback-message {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 47, 0.8);
+    color: var(--light-color);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid var(--light-color);
-    border-top: 5px solid var(--accent-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.video-container iframe.onerror,
+.video-container iframe:not(:valid) {
+    display: none;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.video-container iframe + .fallback-message {
+    opacity: 1;
 }
 
-/* Footer */
+/* Información */
+.info {
+    flex: 1 1 400px;
+    text-align: center;
+}
+
+.info h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: var(--light-color);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.info p {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* Pie de Página */
 .footer {
     background-color: var(--primary-color);
     padding: 20px 0;
@@ -131,28 +165,51 @@ header {
 }
 
 /* Responsividad */
+
+/* Tabletas y dispositivos medianos */
 @media (max-width: 992px) {
-    .video-container {
-        height: calc(100vh - 50px);
-        top: 50px;
+    .hero .container {
+        flex-direction: column;
     }
-    
-    .logo a {
-        font-size: 1.6rem;
+
+    .info h1 {
+        font-size: 2.5rem;
+    }
+
+    .info p {
+        font-size: 1.1rem;
+    }
+
+    .info {
+        padding-top: 20px;
     }
 }
 
+/* Dispositivos móviles pequeños */
 @media (max-width: 600px) {
-    header {
-        padding: 0.8rem;
+    .hero {
+        padding: 80px 0 40px 0;
     }
-    
+
     .logo a {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
     }
-    
-    .video-container {
-        height: calc(100vh - 40px);
-        top: 40px;
+
+    .info h1 {
+        font-size: 2rem;
+    }
+
+    .info p {
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+
+    .footer .social a {
+        font-size: 1.5rem;
+    }
+
+    /* Reducir el gap en móviles */
+    .hero .container {
+        gap: 30px;
     }
 }
