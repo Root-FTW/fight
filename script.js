@@ -1,23 +1,19 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Intentar habilitar autoplay en el iframe
-    const iframe = document.getElementById('liveStream');
-    const fallback = document.querySelector('.fallback-message');
+function showLoading() {
+    document.getElementById('loading').style.display = 'flex';
+}
 
-    // Detectar errores en iframe
-    iframe.addEventListener('error', () => {
-        fallback.style.display = 'flex';
-    });
+function hideLoading() {
+    document.getElementById('loading').style.display = 'none';
+}
 
-    // Intentar reproducir automáticamente después de cargar
-    iframe.addEventListener('load', () => {
-        try {
-            setTimeout(() => {
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                console.log('Intentando reproducir automáticamente...');
-            }, 1000);
-        } catch (error) {
-            console.error('No se pudo habilitar el autoplay:', error);
-            fallback.style.display = 'flex';
-        }
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const iframe = document.getElementById('player');
+    showLoading();
+    
+    // Cargar el reproductor
+    iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=69405&t=${Date.now()}&nopopup=true`;
+    
+    iframe.onload = function() {
+        hideLoading();
+    };
 });
