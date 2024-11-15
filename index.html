@@ -2,423 +2,50 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>FightFTW - Transmisiones en vivo</title>
-    
-    <style>
-        :root {
-            --primary-color: #1e1e2f;
-            --secondary-color: #27293d;
-            --accent-color: #ff5722;
-            --text-color: #f0f0f3;
-            --light-color: #ffffff;
-            --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: var(--font-family);
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        html {
-            height: -webkit-fill-available;
-        }
-
-        .header {
-            background-color: var(--primary-color);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo a {
-            color: var(--light-color);
-            text-decoration: none;
-            font-size: 24px;
-            font-weight: bold;
-            margin-left: 20px;
-        }
-
-        .hero {
-            padding: 20px 0;
-            background: linear-gradient(135deg, var(--accent-color) 0%, #23232e 100%);
-            min-height: calc(100vh - 64px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .video-wrapper {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: #1a1a2e;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            background-color: #000;
-            border-radius: 15px;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-            border-radius: 15px;
-        }
-
-        .initial-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .custom-play-button {
-            width: 80px;
-            height: 80px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            border: none;
-            outline: none;
-        }
-
-        .custom-play-button:hover {
-            transform: scale(1.1);
-            background: #ff6b3d;
-        }
-
-        .custom-play-button::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 20px 0 20px 35px;
-            border-color: transparent transparent transparent white;
-            margin-left: 8px;
-        }
-
-        .loading-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: none;
-            z-index: 999;
-        }
-
-        .popup-counter {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            display: none;
-            z-index: 1001;
-        }
-
-        .info {
-            text-align: center;
-            margin-top: 30px;
-            padding: 0 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .info h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--light-color);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .info p {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        @media (max-width: 768px) {
-            .video-wrapper {
-                width: 95%;
-            }
-            
-            .info h1 {
-                font-size: 2rem;
-            }
-            
-            .info p {
-                font-size: 1rem;
-            }
-
-            .custom-play-button {
-                width: 60px;
-                height: 60px;
-            }
-
-            .custom-play-button::after {
-                border-width: 15px 0 15px 25px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                padding: 10px 0;
-            }
-
-            .info h1 {
-                font-size: 1.8rem;
-            }
-
-            .custom-play-button {
-                width: 50px;
-                height: 50px;
-            }
-
-            .custom-play-button::after {
-                border-width: 12px 0 12px 20px;
-            }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsFTW</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="header">
-        <div class="logo">
-            <a href="#">FightFTW</a>
+        <div class="container">
+            <div class="logo">
+                <a href="#">SportsFTW</a>
+            </div>
         </div>
     </header>
 
-    <main class="hero">
-        <div class="video-wrapper">
-            <div class="video-container" id="videoContainer">
-                <div class="initial-overlay" id="initialOverlay">
-                    <button class="custom-play-button" id="customPlayButton"></button>
+    <main class="hero" role="main">
+        <div class="container">
+            <div class="video-wrapper">
+                <div id="videoContainer" class="video-container">
+                    <div id="initialOverlay" class="initial-overlay"></div>
+                    <div id="loadingMessage" class="loading-message">
+                        Cargando transmisión...
+                    </div>
+                    <div id="popupCounter" class="popup-counter"></div>
+                    <iframe id="liveStream" 
+                            class="stream-iframe" 
+                            frameborder="0" 
+                            allowfullscreen>
+                    </iframe>
+                    <div class="fallback-message">
+                        Error al cargar la transmisión. Por favor, intenta recargar la página.
+                    </div>
                 </div>
-                <div class="loading-message" id="loadingMessage">
-                    Cargando transmisión...
-                </div>
-                <div class="popup-counter" id="popupCounter"></div>
             </div>
-        </div>
-
-        <div class="info">
-            <h1>Bienvenido a FightFTW</h1>
-            <p>Mientras siga fallando la app de Fox Sports en México para ver la UFC, esta web seguirá existiendo</p>
         </div>
     </main>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const videoContainer = document.getElementById('videoContainer');
-        const initialOverlay = document.getElementById('initialOverlay');
-        const loadingMessage = document.getElementById('loadingMessage');
-        let isFirstLoad = true;
-        let originalTab = null;
+    <footer class="footer">
+        <div class="container">
+            <div class="social">
+                <!-- Puedes agregar enlaces a redes sociales aquí si lo deseas -->
+            </div>
+        </div>
+    </footer>
 
-        function showLoading() {
-            loadingMessage.style.display = 'block';
-        }
-
-        function hideLoading() {
-            loadingMessage.style.display = 'none';
-        }
-
-        function handleNewTab() {
-            // Guardar referencia a la pestaña original
-            originalTab = window;
-
-            // Modificar el comportamiento de window.open
-            const originalOpen = window.open;
-            window.open = function(url, target, features) {
-                // Mantener el foco en la pestaña original
-                originalTab.focus();
-                
-                // Intentar forzar el evento en la misma ventana
-                try {
-                    return originalOpen.call(this, 'about:blank', '_self');
-                } catch (e) {
-                    console.warn('Error al manejar nueva pestaña:', e);
-                    return null;
-                }
-            };
-        }
-
-        function createIframe() {
-            const iframe = document.createElement('iframe');
-            iframe.setAttribute('id', 'streamFrame');
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allowfullscreen', 'true');
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('allow', 'autoplay; fullscreen');
-            
-            // Añadir atributos para prevenir navegación en nuevas pestañas
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-            
-            iframe.style.visibility = 'visible';
-            return iframe;
-        }
-
-        initialOverlay.addEventListener('click', async function() {
-            if (!isFirstLoad) return;
-            
-            showLoading();
-            initialOverlay.style.display = 'none';
-
-            try {
-                // Activar el manejador de nuevas pestañas
-                handleNewTab();
-
-                const iframe = createIframe();
-                
-                // Añadir parámetros para prevenir redirecciones
-                iframe.src = `https://v3.bestsolaris.com/solaris.php?postid=70443&t=${Date.now()}&nopopup=true`;
-                
-                iframe.onload = function() {
-                    hideLoading();
-                    try {
-                        const iframeWindow = iframe.contentWindow;
-                        const iframeDoc = iframe.contentDocument || iframeWindow.document;
-
-                        // Sobrescribir funciones de navegación en el iframe
-                        iframeWindow.open = function() { return null; };
-                        
-                        // Prevenir redirecciones
-                        Object.defineProperty(iframeWindow, 'location', {
-                            get: function() { return iframeWindow.document.location; },
-                            set: function() { return false; }
-                        });
-
-                        // Observar y modificar elementos del player
-                        const observer = new MutationObserver(() => {
-                            try {
-                                // Modificar botones de play
-                                const playButtons = iframeDoc.querySelectorAll('.plyr__control--overlaid, .plyr__control--play');
-                                playButtons.forEach(button => {
-                                    if (!button.dataset.modified) {
-                                        button.dataset.modified = 'true';
-                                        button.addEventListener('click', function(e) {
-                                            // Prevenir comportamiento por defecto
-                                            e.stopPropagation();
-                                            
-                                            // Intentar reproducir el video directamente
-                                            const video = iframeDoc.querySelector('video');
-                                            if (video) {
-                                                video.play().catch(() => {});
-                                            }
-                                            
-                                            // Mantener el foco en la pestaña original
-                                            if (originalTab) {
-                                                originalTab.focus();
-                                            }
-                                        }, true);
-                                    }
-                                });
-
-                                // Inyectar CSS para prevenir clics no deseados
-                                const style = iframeDoc.createElement('style');
-                                style.textContent = `
-                                    [target="_blank"],
-                                    [onclick*="window.open"],
-                                    [href*="javascript:window.open"] {
-                                        pointer-events: none !important;
-                                    }
-                                `;
-                                iframeDoc.head.appendChild(style);
-
-                            } catch (e) {
-                                console.warn('Error al modificar el player:', e);
-                            }
-                        });
-
-                        observer.observe(iframeDoc.body, {
-                            childList: true,
-                            subtree: true,
-                            attributes: true
-                        });
-
-                    } catch (error) {
-                        console.warn('Error al configurar el iframe:', error);
-                    }
-                };
-
-                videoContainer.appendChild(iframe);
-                isFirstLoad = false;
-
-            } catch (error) {
-                console.error('Error al cargar el stream:', error);
-                hideLoading();
-                initialOverlay.style.display = 'flex';
-                isFirstLoad = true;
-            }
-        });
-
-        // Mantener el foco en la pestaña principal
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden && originalTab) {
-                originalTab.focus();
-            }
-        });
-
-        // Prevenir cambios de pestaña no deseados
-        window.addEventListener('beforeunload', function(e) {
-            if (originalTab && window !== originalTab) {
-                e.preventDefault();
-                originalTab.focus();
-                return false;
-            }
-        });
-    });
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
