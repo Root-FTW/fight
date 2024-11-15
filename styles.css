@@ -2,7 +2,7 @@
 :root {
     --primary-color: #1e1e2f;
     --secondary-color: #27293d;
-    --accent-color: #ff5722;
+    --accent-color: #ff5722; /* Color de acento más vibrante */
     --text-color: #f0f0f3;
     --light-color: #ffffff;
     --font-family: 'Inter', sans-serif;
@@ -24,12 +24,14 @@ body {
     flex-direction: column;
 }
 
+/* Contenedor */
 .container {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
 }
 
+/* Encabezado */
 .header {
     background-color: var(--primary-color);
     padding: 20px 0;
@@ -48,8 +50,9 @@ body {
     letter-spacing: 1px;
 }
 
+/* Hero Section */
 .hero {
-    padding: 100px 0 60px 0;
+    padding: 100px 0 60px 0; /* Espaciado para el header fijo */
     background: linear-gradient(135deg, var(--accent-color) 0%, #23232e 100%);
     min-height: 100vh;
     display: flex;
@@ -71,7 +74,7 @@ body {
     width: 100%;
     max-width: 800px;
     aspect-ratio: 16 / 9;
-    padding-top: 56.25%;
+    padding-top: 56.25%; /* Fallback para navegadores que no soportan aspect-ratio */
     position: relative;
     border-radius: 15px;
     overflow: hidden;
@@ -94,25 +97,6 @@ body {
     border-radius: 15px;
 }
 
-.stream-iframe {
-    background-color: #000;
-}
-
-.initial-overlay,
-.loading-message {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(30, 30, 47, 0.9);
-    color: var(--light-color);
-    font-size: 1.2rem;
-}
-
 .fallback-message {
     position: absolute;
     top: 0;
@@ -121,25 +105,25 @@ body {
     height: 100%;
     background: rgba(30, 30, 47, 0.8);
     color: var(--light-color);
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.popup-counter {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
+.video-container iframe.onerror,
+.video-container iframe:not(:valid) {
     display: none;
 }
 
+.video-container iframe + .fallback-message {
+    opacity: 1;
+}
+
+/* Pie de Página */
 .footer {
     background-color: var(--primary-color);
     padding: 20px 0;
@@ -160,12 +144,27 @@ body {
 }
 
 /* Responsividad */
+
+/* Tabletas y dispositivos medianos */
 @media (max-width: 992px) {
     .hero .container {
         flex-direction: column;
     }
+
+    .info h1 {
+        font-size: 2.5rem;
+    }
+
+    .info p {
+        font-size: 1.1rem;
+    }
+
+    .info {
+        padding-top: 20px;
+    }
 }
 
+/* Dispositivos móviles pequeños */
 @media (max-width: 600px) {
     .hero {
         padding: 80px 0 40px 0;
@@ -175,15 +174,21 @@ body {
         font-size: 1.6rem;
     }
 
+    .info h1 {
+        font-size: 2rem;
+    }
+
+    .info p {
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+
     .footer .social a {
         font-size: 1.5rem;
     }
 
+    /* Reducir el gap en móviles */
     .hero .container {
         gap: 30px;
-    }
-
-    .video-container {
-        margin: 0 10px;
     }
 }
