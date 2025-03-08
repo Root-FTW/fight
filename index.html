@@ -84,14 +84,14 @@
             }
         }
         
-        /* Escudo anti-anuncios inicial */
-        .ad-shield {
+        /* Escudo inicial */
+        .welcome-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.85);
             z-index: 20;
             display: flex;
             flex-direction: column;
@@ -100,19 +100,19 @@
             transition: opacity 0.4s ease;
         }
         
-        .ad-shield.hidden {
+        .welcome-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
         
-        .ad-shield h2 {
+        .welcome-screen h2 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
             text-align: center;
             padding: 0 1rem;
         }
         
-        .ad-shield p {
+        .welcome-screen p {
             font-size: 0.9rem;
             margin-bottom: 2rem;
             text-align: center;
@@ -142,13 +142,14 @@
             background-color: var(--accent-hover);
         }
         
-        /* Iframe del stream */
-        .iframe-container {
+        /* Iframe wrapper con protección */
+        .stream-frame-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none; /* Inicialmente bloqueamos todos los clics */
             z-index: 1;
         }
         
@@ -161,8 +162,71 @@
             border: none;
         }
         
-        /* Indicador de bloqueo de anuncios */
-        .ad-blocker-badge {
+        /* Zonas interactivas seguras */
+        .control-zones {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none; /* No bloqueamos clics en general */
+        }
+        
+        /* Zonas para controles específicos */
+        .safe-zone {
+            position: absolute;
+            background-color: transparent;
+            z-index: 5;
+            pointer-events: auto; /* Esta zona permite clics */
+        }
+        
+        /* Zona para botón de play/pause (generalmente parte inferior izquierda) */
+        .play-zone {
+            bottom: 0;
+            left: 0;
+            width: 15%;
+            height: 20%;
+        }
+        
+        /* Zona para control de volumen (generalmente parte inferior, a la derecha de play) */
+        .volume-zone {
+            bottom: 0;
+            left: 15%;
+            width: 15%;
+            height: 20%;
+        }
+        
+        /* Zona para fullscreen (generalmente esquina inferior derecha) */
+        .fullscreen-zone {
+            bottom: 0;
+            right: 0;
+            width: 15%;
+            height: 20%;
+        }
+        
+        /* Zona para otras áreas seguras del reproductor */
+        .timeline-zone {
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            height: 10%;
+        }
+        
+        /* Capa anti-anuncios para todo el reproductor */
+        .ad-blocker-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: auto; /* Bloquea clics por defecto */
+            background-color: transparent;
+        }
+        
+        /* Badge de protección activa */
+        .protection-badge {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -171,55 +235,45 @@
             font-size: 0.7rem;
             padding: 4px 8px;
             border-radius: 4px;
-            z-index: 5;
+            z-index: 15;
             display: flex;
             align-items: center;
             gap: 4px;
         }
         
-        .ad-blocker-badge i {
+        .protection-badge i {
             color: #f44336;
         }
         
-        /* Capa para bloquear solo anuncios, no interacciones legítimas */
-        .ad-blocker-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2; /* Por encima del iframe pero por debajo de los controles */
-            pointer-events: none; /* No intercepta clics por defecto */
-        }
-        
-        /* Fullscreen control */
+        /* Fullscreen button propio (como respaldo) */
         .fullscreen-btn {
             position: absolute;
             bottom: 10px;
             right: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: none;
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
+            border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 12;
             cursor: pointer;
-            z-index: 10;
             transition: background-color 0.2s ease;
         }
         
         .fullscreen-btn:hover, .fullscreen-btn:active {
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.7);
         }
         
         /* Notificación de bloqueo de anuncios */
-        .popup-blocked-notification {
+        .popup-notification {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 10px 15px;
@@ -228,37 +282,29 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 9999;
+            z-index: 999;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: transform 0.3s ease;
         }
         
-        .popup-blocked-notification.show {
-            opacity: 1;
-            transform: translateY(0);
+        .popup-notification.show {
+            transform: translateX(-50%) translateY(0);
         }
         
-        .popup-blocked-notification i {
+        .popup-notification i {
             color: #f44336;
         }
         
-        /* Contador de bloqueos */
-        .block-counter {
+        .popup-counter {
             background-color: #f44336;
             color: white;
-            font-size: 0.6rem;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
         }
         
-        /* Tarjeta de información */
+        /* Información */
         .info-card {
             background-color: var(--surface-color);
             backdrop-filter: blur(10px);
@@ -329,11 +375,11 @@
         
         /* Media queries para responsividad */
         @media (max-width: 480px) {
-            .ad-shield h2 {
+            .welcome-screen h2 {
                 font-size: 1.2rem;
             }
             
-            .ad-shield p {
+            .welcome-screen p {
                 font-size: 0.8rem;
             }
             
@@ -354,11 +400,11 @@
     <main>
         <section class="player-section">
             <div class="player-container">
-                <!-- Iframe del stream -->
-                <div class="iframe-container">
+                <!-- Contenedor del iframe con protección -->
+                <div class="stream-frame-container" id="streamContainer">
                     <iframe 
                         id="streamIframe"
-                        src="https://sons-stream.com/tvon.php?hd=112" 
+                        src="about:blank" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen
                         loading="lazy"
@@ -366,24 +412,32 @@
                     ></iframe>
                 </div>
                 
-                <!-- Capa para bloquear solo anuncios, no interacciones legítimas -->
-                <div class="ad-blocker-layer" id="adBlockerLayer"></div>
+                <!-- Capa anti-anuncios que cubre todo excepto las zonas seguras -->
+                <div class="ad-blocker-overlay" id="adBlockerOverlay"></div>
                 
-                <!-- Botón de pantalla completa propio -->
+                <!-- Zonas seguras que permiten interacción con controles específicos -->
+                <div class="control-zones">
+                    <div class="safe-zone play-zone" id="playZone"></div>
+                    <div class="safe-zone volume-zone" id="volumeZone"></div>
+                    <div class="safe-zone fullscreen-zone" id="fullscreenZone"></div>
+                    <div class="safe-zone timeline-zone" id="timelineZone"></div>
+                </div>
+                
+                <!-- Botón propio de pantalla completa como respaldo -->
                 <button class="fullscreen-btn" id="fullscreenBtn">
                     <i class="fas fa-expand"></i>
                 </button>
                 
-                <!-- Indicador de bloqueo de anuncios -->
-                <div class="ad-blocker-badge">
+                <!-- Indicador de protección activa -->
+                <div class="protection-badge">
                     <i class="fas fa-shield-alt"></i>
                     <span>Protección activa</span>
                 </div>
                 
-                <!-- Escudo anti-anuncios inicial -->
-                <div class="ad-shield" id="adShield">
+                <!-- Pantalla de bienvenida inicial -->
+                <div class="welcome-screen" id="welcomeScreen">
                     <h2>Stream protegido contra anuncios</h2>
-                    <p>Hemos implementado medidas para evitar anuncios emergentes mientras disfrutas del contenido.</p>
+                    <p>Hemos implementado una protección avanzada contra anuncios emergentes mientras disfrutas del contenido.</p>
                     <button class="watch-btn" id="watchButton">
                         <i class="fas fa-play"></i>
                         Ver Stream
@@ -395,8 +449,8 @@
                 <h2><i class="fas fa-info-circle"></i> Información</h2>
                 <p>Este stream está optimizado para dispositivos móviles y protegido contra anuncios.</p>
                 <ul class="tip-list">
-                    <li><i class="fas fa-check-circle"></i> <span>Utiliza los controles originales del reproductor para controlar el volumen y reproducción.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span>Usa el botón de pantalla completa en la esquina inferior derecha para expandir el video.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Usa los controles en la parte inferior del reproductor para ajustar volumen y reproducción.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Si no puedes acceder a algún control, usa el botón de pantalla completa en la esquina inferior derecha.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span>Si experimentas problemas, intenta actualizar la página.</span></li>
                 </ul>
             </div>
@@ -408,62 +462,299 @@
     </footer>
     
     <!-- Notificación de bloqueo de popups -->
-    <div class="popup-blocked-notification" id="popupNotification">
+    <div class="popup-notification" id="popupNotification">
         <i class="fas fa-ban"></i>
-        <span>Anuncio bloqueado</span>
-        <div class="block-counter" id="blockCounter">0</div>
+        <span>Anuncios bloqueados</span>
+        <div class="popup-counter" id="popupCounter">0</div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Referencias a elementos del DOM
             const streamIframe = document.getElementById('streamIframe');
-            const adShield = document.getElementById('adShield');
+            const streamContainer = document.getElementById('streamContainer');
+            const welcomeScreen = document.getElementById('welcomeScreen');
             const watchButton = document.getElementById('watchButton');
-            const adBlockerLayer = document.getElementById('adBlockerLayer');
+            const adBlockerOverlay = document.getElementById('adBlockerOverlay');
+            const playZone = document.getElementById('playZone');
+            const volumeZone = document.getElementById('volumeZone');
+            const fullscreenZone = document.getElementById('fullscreenZone');
+            const timelineZone = document.getElementById('timelineZone');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
             const popupNotification = document.getElementById('popupNotification');
-            const blockCounter = document.getElementById('blockCounter');
+            const popupCounter = document.getElementById('popupCounter');
             
             // Variables de estado
-            let popupBlockCount = 0;
+            let blockCount = 0;
             let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             let isAndroid = /Android/.test(navigator.userAgent);
             let isMobile = isIOS || isAndroid || window.innerWidth <= 768;
+            let originalWindowOpen = window.open;
+            let originalCreateElement = document.createElement;
+            let safeMode = true; // Modo agresivo de bloqueo
+            let lastSafeClick = 0;
             
-            // Iniciar visualización del stream
+            // Función para cargar el stream con protección
+            function loadStreamSafely() {
+                // Cargamos el iframe después para mayor control
+                streamIframe.src = "https://sons-stream.com/tvon.php?hd=112";
+                
+                // Implementamos protección contra anuncios
+                setupAdvancedAdBlocking();
+                
+                // Configuramos las zonas seguras
+                setupSafeZones();
+                
+                // Mostramos el iframe
+                streamContainer.style.pointerEvents = "none";
+                
+                // Añadimos nuestros propios controles
+                setupCustomControls();
+            }
+            
+            // Iniciar la visualización al hacer clic en el botón
             watchButton.addEventListener('click', function() {
-                // Ocultar escudo
-                adShield.classList.add('hidden');
+                welcomeScreen.classList.add('hidden');
                 
-                // Configurar bloqueo de anuncios
-                setupPopupBlocker();
+                // Cargamos el stream de forma segura después de un breve retraso
+                setTimeout(loadStreamSafely, 300);
+            });
+            
+            // Configurar zonas seguras que permiten interactuar con el reproductor
+            function setupSafeZones() {
+                // Las zonas seguras permiten que los clics pasen al iframe subyacente
+                // pero solo en áreas específicas donde están los controles del reproductor
                 
-                // Inicializar la página como se esperaría
-                setTimeout(() => {
-                    // En iOS, a veces necesitas un clic inicial para activar el audio
-                    if (isIOS) {
-                        try {
-                            const clickEvent = new MouseEvent('click', {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window
-                            });
-                            
-                            streamIframe.dispatchEvent(clickEvent);
-                        } catch (e) {
-                            console.log('Error en clic inicial:', e);
+                // Función para manejar clics en zonas seguras
+                const handleSafeZoneClick = function(zone, e) {
+                    // Temporalmente permitir que el clic pase al iframe
+                    streamContainer.style.pointerEvents = "auto";
+                    
+                    // Registramos este clic como seguro
+                    lastSafeClick = Date.now();
+                    
+                    // Desactivamos temporalmente el bloqueador de popup para este clic legítimo
+                    safeMode = false;
+                    
+                    // Reactivamos después de un breve período
+                    setTimeout(function() {
+                        streamContainer.style.pointerEvents = "none";
+                        safeMode = true;
+                    }, 300); // Tiempo suficiente para que el clic se registre pero no para que se abran popups
+                };
+                
+                // Asignar manejadores de eventos a cada zona segura
+                playZone.addEventListener('click', function(e) {
+                    handleSafeZoneClick('play', e);
+                    
+                    // No propagamos el evento para evitar que active el overlay
+                    e.stopPropagation();
+                });
+                
+                volumeZone.addEventListener('click', function(e) {
+                    handleSafeZoneClick('volume', e);
+                    e.stopPropagation();
+                });
+                
+                fullscreenZone.addEventListener('click', function(e) {
+                    handleSafeZoneClick('fullscreen', e);
+                    e.stopPropagation();
+                });
+                
+                timelineZone.addEventListener('click', function(e) {
+                    handleSafeZoneClick('timeline', e);
+                    e.stopPropagation();
+                });
+                
+                // El overlay general bloquea los clics en el resto del reproductor
+                adBlockerOverlay.addEventListener('click', function(e) {
+                    // Si es un clic fuera de las zonas seguras, lo bloqueamos
+                    e.stopPropagation();
+                    
+                    // Mostramos notificación para que el usuario sepa que se bloqueó un posible anuncio
+                    incrementBlockCount("Clic bloqueado en área insegura");
+                });
+            }
+            
+            // Configurar controles personalizados
+            function setupCustomControls() {
+                // Botón de pantalla completa personalizado
+                fullscreenBtn.addEventListener('click', function() {
+                    toggleFullscreen();
+                });
+            }
+            
+            // Sistema avanzado de bloqueo de anuncios
+            function setupAdvancedAdBlocking() {
+                // 1. Reemplazar window.open para evitar popups
+                window.open = function(url, target, features) {
+                    // Bloqueamos solo en modo seguro
+                    if (safeMode) {
+                        incrementBlockCount("Ventana emergente bloqueada");
+                        return null;
+                    } else {
+                        // Si estamos en modo seguro (clic en zona controlada), permitimos la acción original
+                        // pero solo para algunos casos específicos (por ejemplo fullscreen)
+                        if (target === "_self" || (features && features.includes("fullscreen"))) {
+                            return originalWindowOpen.call(window, url, target, features);
                         }
+                        // Para otros casos, seguimos bloqueando
+                        incrementBlockCount("Ventana emergente sospechosa bloqueada");
+                        return null;
                     }
-                }, 500);
-            });
+                };
+                
+                // 2. Modificar document.createElement para detectar iframes maliciosos
+                document.createElement = function(tagName) {
+                    const element = originalCreateElement.call(document, tagName);
+                    
+                    // Si se está creando un iframe, lo monitoreamos
+                    if (tagName.toLowerCase() === 'iframe') {
+                        // Establecemos un MutationObserver para detectar cambios sospechosos
+                        setTimeout(function() {
+                            // Si no es nuestro iframe principal y está cargando contenido externo sospechoso
+                            if (element !== streamIframe && element.src && 
+                                !element.src.includes('sons-stream.com')) {
+                                
+                                incrementBlockCount("Iframe externo bloqueado");
+                                element.src = "about:blank"; // Limpiar
+                                
+                                // Si tiene padre, intentar quitar del DOM
+                                if (element.parentNode) {
+                                    element.parentNode.removeChild(element);
+                                }
+                            }
+                        }, 0);
+                    }
+                    
+                    return element;
+                };
+                
+                // 3. Interceptar eventos de redirect
+                let lastBeforeUnloadTime = 0;
+                
+                window.addEventListener('beforeunload', function(e) {
+                    const now = Date.now();
+                    
+                    // Si ocurre poco después de un clic seguro, permitimos el evento
+                    if (now - lastSafeClick < 1000) {
+                        return;
+                    }
+                    
+                    // Si ocurre muy cerca de otro evento beforeunload, es sospechoso
+                    if (now - lastBeforeUnloadTime < 100) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        incrementBlockCount("Redirección múltiple bloqueada");
+                        return false;
+                    }
+                    
+                    lastBeforeUnloadTime = now;
+                });
+                
+                // 4. Bloquear la apertura de ventanas por scripts sin interacción del usuario
+                Object.defineProperty(window, 'open', {
+                    configurable: false,
+                    writable: false,
+                    value: window.open
+                });
+                
+                // 5. Monitorear cambios en el DOM para detectar elementos maliciosos
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                            for (let i = 0; i < mutation.addedNodes.length; i++) {
+                                const node = mutation.addedNodes[i];
+                                
+                                // Detectar iframes maliciosos
+                                if (node.nodeName === 'IFRAME' && node !== streamIframe) {
+                                    // Solo bloqueamos si no está en una zona segura
+                                    const isInSafeContainer = false; // Lógica para determinar si es parte legítima del reproductor
+                                    
+                                    if (!isInSafeContainer) {
+                                        incrementBlockCount("Iframe malicioso bloqueado");
+                                        node.src = "about:blank";
+                                        if (node.parentNode) {
+                                            node.parentNode.removeChild(node);
+                                        }
+                                    }
+                                }
+                                
+                                // Detectar enlaces maliciosos
+                                if (node.nodeName === 'A') {
+                                    // Asegurarnos que los enlaces externos sean seguros
+                                    node.setAttribute('rel', 'noopener noreferrer');
+                                    
+                                    // Si abre en una nueva ventana, podría ser un anuncio
+                                    if (node.getAttribute('target') === '_blank') {
+                                        node.addEventListener('click', function(e) {
+                                            // Verificamos si es un clic legítimo en una zona segura
+                                            if (safeMode) {
+                                                e.preventDefault();
+                                                incrementBlockCount("Enlace externo bloqueado");
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                // 6. Manejar timers sospechosos (muchos sitios de anuncios usan setTimeout)
+                const originalSetTimeout = window.setTimeout;
+                window.setTimeout = function(callback, delay) {
+                    // Si el retraso es muy corto y estamos en modo seguro, podría ser un popup
+                    if (safeMode && delay < 50 && typeof callback === 'function') {
+                        // Envolvemos la función para monitorizarla
+                        const wrappedCallback = function() {
+                            try {
+                                // Intentamos detectar si la función intenta abrir ventanas
+                                const callbackString = callback.toString();
+                                if (callbackString.includes('window.open') || 
+                                    callbackString.includes('location.href') ||
+                                    callbackString.includes('document.location')) {
+                                    
+                                    incrementBlockCount("Script sospechoso bloqueado");
+                                    return;
+                                }
+                                
+                                return callback.apply(this, arguments);
+                            } catch (e) {
+                                console.error('Error en callback:', e);
+                            }
+                        };
+                        
+                        return originalSetTimeout.call(window, wrappedCallback, delay);
+                    }
+                    
+                    return originalSetTimeout.apply(window, arguments);
+                };
+            }
             
-            // Configurar el botón de pantalla completa
-            fullscreenBtn.addEventListener('click', function() {
-                toggleFullscreen();
-            });
+            // Incrementar contador de bloqueos y mostrar notificación
+            function incrementBlockCount(reason) {
+                blockCount++;
+                popupCounter.textContent = blockCount;
+                
+                // Mostrar notificación
+                popupNotification.classList.add('show');
+                
+                // Log para debug
+                console.log(`Bloqueo #${blockCount}: ${reason}`);
+                
+                // Ocultar después de 3 segundos
+                setTimeout(function() {
+                    popupNotification.classList.remove('show');
+                }, 3000);
+            }
             
-            // Función para alternar pantalla completa
+            // Toggle pantalla completa
             function toggleFullscreen() {
                 const container = document.querySelector('.player-container');
                 
@@ -501,112 +792,6 @@
                     // Cambiar icono
                     fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
                 }
-            }
-            
-            // Configurar sistema de bloqueo de popups más inteligente
-            function setupPopupBlocker() {
-                // 1. Sobrescribir window.open (principal fuente de popups)
-                const originalWindowOpen = window.open;
-                window.open = function() {
-                    // Incrementar el contador
-                    popupBlockCount++;
-                    blockCounter.textContent = popupBlockCount;
-                    
-                    // Mostrar notificación
-                    showPopupNotification();
-                    
-                    // Devolver un objeto falso en lugar de una referencia a ventana
-                    return {
-                        focus: function() {},
-                        blur: function() {},
-                        close: function() {},
-                        postMessage: function() {},
-                        location: { href: '' }
-                    };
-                };
-                
-                // 2. Configurar manejo de navegación fuera de la página
-                window.addEventListener('beforeunload', function(e) {
-                    // Solo prevenir salidas no intencionadas por anuncios
-                    // Esto permitirá el fullscreen y otras acciones legítimas
-                    const currentTime = new Date().getTime();
-                    const timeSinceLastAction = currentTime - lastActionTime;
-                    
-                    // Si ha pasado poco tiempo desde la última acción del usuario,
-                    // probablemente sea legítimo - sino, podría ser un redirect de anuncio
-                    if (timeSinceLastAction > 1000) {
-                        e.preventDefault();
-                        e.returnValue = '';
-                        
-                        // Incrementar contador
-                        popupBlockCount++;
-                        blockCounter.textContent = popupBlockCount;
-                        showPopupNotification();
-                    }
-                });
-                
-                // 3. Monitorear y prevenir nuevos iframes (común en ataques de anuncios)
-                const observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                            for (let i = 0; i < mutation.addedNodes.length; i++) {
-                                const node = mutation.addedNodes[i];
-                                
-                                // Si se añade un iframe que no es nuestro stream, eliminarlo
-                                if (node.nodeName === 'IFRAME' && node !== streamIframe) {
-                                    node.parentNode.removeChild(node);
-                                    
-                                    // Incrementar contador
-                                    popupBlockCount++;
-                                    blockCounter.textContent = popupBlockCount;
-                                    showPopupNotification();
-                                }
-                                
-                                // Prevenir links maliciosos
-                                if (node.nodeName === 'A') {
-                                    // Siempre forzar noopener y noreferrer
-                                    node.setAttribute('rel', 'noopener noreferrer');
-                                    
-                                    // Si abre en nueva ventana, interceptar
-                                    if (node.getAttribute('target') === '_blank') {
-                                        node.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            
-                                            // Incrementar contador
-                                            popupBlockCount++;
-                                            blockCounter.textContent = popupBlockCount;
-                                            showPopupNotification();
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    });
-                });
-                
-                observer.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-                
-                // 4. Registrar la última acción del usuario para distinguir acciones legítimas
-                let lastActionTime = new Date().getTime();
-                
-                ['click', 'touchstart', 'keydown'].forEach(function(eventType) {
-                    document.addEventListener(eventType, function() {
-                        lastActionTime = new Date().getTime();
-                    });
-                });
-            }
-            
-            // Mostrar notificación de bloqueo de anuncios
-            function showPopupNotification() {
-                popupNotification.classList.add('show');
-                
-                // Ocultar después de 3 segundos
-                setTimeout(function() {
-                    popupNotification.classList.remove('show');
-                }, 3000);
             }
             
             // Ajustes basados en si estamos en pantalla completa
