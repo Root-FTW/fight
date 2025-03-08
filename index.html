@@ -71,6 +71,24 @@
             border-radius: 4px;
         }
         
+        .fallback-button {
+            display: block;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 1rem auto;
+            text-align: center;
+            max-width: 300px;
+            transition: background-color 0.3s;
+        }
+        
+        .fallback-button:hover {
+            background-color: #0d8bf2;
+        }
+        
         @media (max-width: 768px) {
             .stream-container {
                 aspect-ratio: 16/9;
@@ -89,19 +107,42 @@
     
     <main>
         <div class="stream-container">
-            <!-- Intentamos usar sandbox para limitar comportamientos no deseados -->
+            <!-- Eliminamos sandbox y añadimos más atributos para mejorar compatibilidad -->
             <iframe 
                 src="https://sons-stream.com/tvon.php?hd=112" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen
-                sandbox="allow-scripts allow-same-origin allow-forms"
                 loading="lazy"
                 referrerpolicy="no-referrer"
             ></iframe>
         </div>
     </main>
     
+    <a href="https://sons-stream.com/tvon.php?hd=112" target="_blank" class="fallback-button">
+        Abrir Stream en Ventana Nueva
+    </a>
+    
     <footer>
         <p>&copy; 2025 Mi Página de Stream</p>
     </footer>
+
+    <script>
+        // Script para intentar manejar errores de iframe
+        window.addEventListener('load', function() {
+            const iframe = document.querySelector('iframe');
+            
+            // Verificar si el iframe se cargó correctamente
+            iframe.addEventListener('error', function() {
+                console.log('Error al cargar el iframe');
+                iframe.style.display = 'none';
+                document.querySelector('.fallback-button').style.display = 'block';
+            });
+            
+            // Añadir evento para mensajes de error desde el iframe
+            window.addEventListener('message', function(event) {
+                console.log('Mensaje recibido:', event.data);
+            });
+        });
+    </script>
 </body>
 </html>
