@@ -142,7 +142,7 @@
             background-color: var(--accent-hover);
         }
         
-        /* Contenedor del stream */
+        /* Stream iframe */
         .stream-container {
             position: absolute;
             top: 0;
@@ -161,62 +161,38 @@
             border: none;
         }
         
-        /* Modo de fase inicial (alto bloqueo) */
-        .initial-protection {
+        /* Counter badge para anuncios cerrados */
+        .ad-counter {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.01); /* Casi transparente */
-            z-index: 10;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             display: flex;
-            justify-content: center;
             align-items: center;
-            transition: opacity 0.3s ease;
-        }
-        
-        .initial-protection.hidden {
-            opacity: 0;
+            gap: 5px;
+            z-index: 10;
             pointer-events: none;
         }
         
-        .loading-message {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            text-align: center;
-            max-width: 300px;
+        .ad-counter i {
+            color: #f44336;
         }
         
-        .loading-message h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .loading-message p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .loading-spinner {
-            margin: 1rem auto;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--accent-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .click-counter {
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+        .count-number {
+            background-color: #f44336;
+            color: white;
+            font-size: 0.7rem;
+            height: 18px;
+            min-width: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
         }
         
         /* Fullscreen button */
@@ -233,7 +209,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 10;
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
@@ -242,15 +218,14 @@
             background-color: rgba(0, 0, 0, 0.7);
         }
         
-        /* Notificacion de anuncio bloqueado */
+        /* Notificación de anuncio cerrado */
         .ad-notification {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            right: 20px;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 10px 15px;
+            padding: 10px;
             border-radius: 4px;
             font-size: 0.8rem;
             display: flex;
@@ -258,62 +233,48 @@
             gap: 8px;
             z-index: 999;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
         }
         
         .ad-notification.show {
-            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            transform: translateX(0);
         }
         
         .ad-notification i {
-            color: #f44336;
-        }
-        
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            font-size: 0.75rem;
-            padding: 5px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            z-index: 100;
-        }
-        
-        .badge i {
-            color: #f44336;
-        }
-        
-        .switch {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            font-size: 0.75rem;
-            padding: 5px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            z-index: 100;
-            transition: background-color 0.2s ease;
-            cursor: pointer;
-        }
-        
-        .switch:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        
-        .switch i {
             color: #4CAF50;
         }
         
-        .switch.disabled i {
+        /* Toggle para activar/desactivar el cierre automático */
+        .auto-close-toggle {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .auto-close-toggle:hover, .auto-close-toggle:active {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .auto-close-toggle i {
+            color: #4CAF50;
+        }
+        
+        .auto-close-toggle.disabled i {
             color: #f44336;
         }
         
@@ -399,6 +360,10 @@
             .watch-btn {
                 padding: 0.7rem 1.3rem;
             }
+            
+            .auto-close-toggle, .ad-counter {
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -413,7 +378,7 @@
     <main>
         <section class="player-section">
             <div class="player-container">
-                <!-- Contenedor del stream -->
+                <!-- Stream iframe container -->
                 <div class="stream-container">
                     <iframe 
                         id="streamIframe"
@@ -425,26 +390,11 @@
                     ></iframe>
                 </div>
                 
-                <!-- Modo de protección inicial -->
-                <div class="initial-protection" id="initialProtection">
-                    <div class="loading-message">
-                        <h3>Preparando stream seguro</h3>
-                        <div class="loading-spinner"></div>
-                        <p>Bloqueando anuncios iniciales...</p>
-                        <div class="click-counter" id="clickCounter">Clics restantes: 5</div>
-                    </div>
-                </div>
-                
-                <!-- Badge de protección -->
-                <div class="badge" id="protectionBadge">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Protección activa</span>
-                </div>
-                
-                <!-- Botón para activar/desactivar protección -->
-                <div class="switch" id="protectionSwitch">
-                    <i class="fas fa-toggle-on"></i>
-                    <span>Protección ON</span>
+                <!-- Contador de anuncios cerrados -->
+                <div class="ad-counter" id="adCounter">
+                    <i class="fas fa-window-close"></i>
+                    <span>Anuncios cerrados:</span>
+                    <div class="count-number" id="countNumber">0</div>
                 </div>
                 
                 <!-- Botón de pantalla completa -->
@@ -452,10 +402,16 @@
                     <i class="fas fa-expand"></i>
                 </button>
                 
+                <!-- Toggle para activar/desactivar el cierre automático -->
+                <div class="auto-close-toggle" id="autoCloseToggle">
+                    <i class="fas fa-toggle-on"></i>
+                    <span>Cierre automático</span>
+                </div>
+                
                 <!-- Pantalla de bienvenida -->
                 <div class="welcome-screen" id="welcomeScreen">
-                    <h2>Stream protegido contra anuncios</h2>
-                    <p>Hemos implementado un sistema que elimina los anuncios iniciales para que puedas disfrutar del contenido sin interrupciones.</p>
+                    <h2>Stream sin interrupciones</h2>
+                    <p>Hemos implementado un sistema que cierra automáticamente las ventanas de anuncios para que puedas disfrutar del contenido sin distracciones.</p>
                     <button class="watch-btn" id="watchButton">
                         <i class="fas fa-play"></i>
                         Ver Stream
@@ -465,11 +421,11 @@
             
             <div class="info-card">
                 <h2><i class="fas fa-info-circle"></i> Información</h2>
-                <p>Este stream está optimizado para dispositivos móviles y protegido contra anuncios.</p>
+                <p>Este stream está optimizado para dispositivos móviles con cierre automático de anuncios.</p>
                 <ul class="tip-list">
-                    <li><i class="fas fa-check-circle"></i> <span>La protección inicial bloquea los anuncios durante los primeros clics, después puedes usar los controles con normalidad.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span>Puedes activar o desactivar la protección con el botón en la esquina inferior izquierda.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span>Si los controles no funcionan correctamente, desactiva la protección temporalmente.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Los anuncios emergentes se cierran automáticamente para que puedas usar los controles sin interrupciones.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>En la esquina superior derecha puedes ver cuántos anuncios se han cerrado.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Si prefieres desactivar esta función, usa el botón en la esquina inferior izquierda.</span></li>
                 </ul>
             </div>
         </section>
@@ -479,10 +435,10 @@
         <p>&copy; 2025 StreamView | Una experiencia de visualización premium</p>
     </footer>
     
-    <!-- Notificación de bloqueo de anuncios -->
+    <!-- Notificación de anuncio cerrado -->
     <div class="ad-notification" id="adNotification">
-        <i class="fas fa-ban"></i>
-        <span>Anuncio bloqueado</span>
+        <i class="fas fa-check-circle"></i>
+        <span>Anuncio cerrado automáticamente</span>
     </div>
 
     <script>
@@ -491,132 +447,162 @@
             const streamIframe = document.getElementById('streamIframe');
             const welcomeScreen = document.getElementById('welcomeScreen');
             const watchButton = document.getElementById('watchButton');
-            const initialProtection = document.getElementById('initialProtection');
-            const clickCounter = document.getElementById('clickCounter');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const adCounter = document.getElementById('adCounter');
+            const countNumber = document.getElementById('countNumber');
             const adNotification = document.getElementById('adNotification');
-            const protectionBadge = document.getElementById('protectionBadge');
-            const protectionSwitch = document.getElementById('protectionSwitch');
+            const autoCloseToggle = document.getElementById('autoCloseToggle');
             
             // Variables de estado
-            let clicksRemaining = 5;
-            let blockCount = 0;
+            let adCloseCount = 0;
+            let autoCloseEnabled = true;
             let originalWindowOpen = window.open;
-            let isProtectionEnabled = true;
             let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             
-            // Cargar el stream cuando se hace clic en el botón de inicio
+            // Iniciar stream cuando se hace clic en el botón de inicio
             watchButton.addEventListener('click', function() {
                 // Ocultar pantalla de bienvenida
                 welcomeScreen.classList.add('hidden');
                 
-                // Mostrar capa de protección inicial
-                initialProtection.classList.remove('hidden');
-                
-                // Cargar el stream
-                streamIframe.src = "https://sons-stream.com/tvon.php?hd=112";
-                
-                // Configurar protección anti-anuncios
-                setupAdBlocker();
+                // Cargar el stream real con un pequeño retraso
+                setTimeout(function() {
+                    streamIframe.src = "https://sons-stream.com/tvon.php?hd=112";
+                    
+                    // Configurar interceptor de anuncios
+                    setupAdAutoCloser();
+                }, 500);
             });
             
-            // Botón para activar/desactivar la protección
-            protectionSwitch.addEventListener('click', function() {
-                isProtectionEnabled = !isProtectionEnabled;
+            // Toggle para activar/desactivar el cierre automático
+            autoCloseToggle.addEventListener('click', function() {
+                autoCloseEnabled = !autoCloseEnabled;
                 
-                if (isProtectionEnabled) {
-                    protectionSwitch.innerHTML = '<i class="fas fa-toggle-on"></i><span>Protección ON</span>';
-                    protectionSwitch.classList.remove('disabled');
-                    protectionBadge.style.display = 'flex';
+                if (autoCloseEnabled) {
+                    autoCloseToggle.innerHTML = '<i class="fas fa-toggle-on"></i><span>Cierre automático</span>';
+                    autoCloseToggle.classList.remove('disabled');
                     
-                    // Reactivar bloqueo de popups
+                    // Restaurar interceptor
                     window.open = function(url, target, features) {
-                        blockCount++;
-                        showAdBlockedNotification();
-                        return { focus: function() {}, closed: false };
+                        // Llamamos al original pero obtenemos la referencia
+                        const newWindow = originalWindowOpen.call(this, url, target, features);
+                        
+                        // Incrementamos el contador
+                        adCloseCount++;
+                        countNumber.textContent = adCloseCount;
+                        
+                        // Mostrar notificación
+                        showNotification();
+                        
+                        // Cerrar inmediatamente
+                        if (newWindow) {
+                            setTimeout(function() {
+                                try {
+                                    newWindow.close();
+                                } catch (e) {
+                                    console.log('No se pudo cerrar la ventana:', e);
+                                }
+                            }, 50);
+                        }
+                        
+                        // Devolver una referencia nula para evitar que scripts manipulen la ventana
+                        return null;
                     };
                 } else {
-                    protectionSwitch.innerHTML = '<i class="fas fa-toggle-off"></i><span>Protección OFF</span>';
-                    protectionSwitch.classList.add('disabled');
-                    protectionBadge.style.display = 'none';
+                    autoCloseToggle.innerHTML = '<i class="fas fa-toggle-off"></i><span>Cierre automático</span>';
+                    autoCloseToggle.classList.add('disabled');
                     
-                    // Permitir popups si el usuario desactiva la protección
+                    // Restaurar comportamiento original
                     window.open = originalWindowOpen;
                 }
             });
             
-            // Configurar sistema anti-anuncios
-            function setupAdBlocker() {
-                // Guardar referencia al original window.open
+            // Configurar sistema de cierre automático de anuncios
+            function setupAdAutoCloser() {
+                // Guardar referencia al window.open original
                 originalWindowOpen = window.open;
                 
-                // Reemplazar window.open para bloquear popups
+                // Reemplazar window.open para interceptar las aperturas
                 window.open = function(url, target, features) {
-                    // Incrementar contador
-                    blockCount++;
-                    
-                    // Reducir contador de clics restantes si aún estamos en modo de protección inicial
-                    if (clicksRemaining > 0) {
-                        clicksRemaining--;
-                        clickCounter.textContent = `Clics restantes: ${clicksRemaining}`;
-                        
-                        // Si llegamos a cero, desactivar la protección inicial
-                        if (clicksRemaining === 0) {
-                            // Quitar la capa de protección después de cierto tiempo
-                            setTimeout(function() {
-                                initialProtection.classList.add('hidden');
-                            }, 1500);
-                        }
+                    // Si el cierre automático está desactivado, comportamiento normal
+                    if (!autoCloseEnabled) {
+                        return originalWindowOpen.call(this, url, target, features);
                     }
+                    
+                    // Incrementar contador
+                    adCloseCount++;
+                    countNumber.textContent = adCloseCount;
                     
                     // Mostrar notificación
-                    showAdBlockedNotification();
+                    showNotification();
                     
-                    // Devolver un objeto falso para evitar errores de script
-                    return { focus: function() {}, closed: false };
+                    // Estrategia 1: Abrir la ventana pero cerrarla inmediatamente
+                    const popup = originalWindowOpen.call(this, url, target, features);
+                    
+                    // Cerrar la ventana inmediatamente
+                    if (popup) {
+                        setTimeout(function() {
+                            try {
+                                popup.close();
+                            } catch (e) {
+                                console.log('No se pudo cerrar popup:', e);
+                            }
+                        }, 50); // Tiempo mínimo para que se registre la apertura pero se cierre antes de que sea visible
+                    }
+                    
+                    // Estrategia 2: Para dispositivos iOS donde puede que no funcione bien cerrar ventanas
+                    if (isIOS) {
+                        // En iOS, devolver una ventana falsa puede ser más efectivo
+                        return {
+                            closed: false,
+                            close: function() {},
+                            focus: function() {},
+                            blur: function() {},
+                            location: { href: url || '' }
+                        };
+                    }
+                    
+                    // Para la mayoría de navegadores, devolver null previene que scripts manipulen la ventana
+                    return null;
                 };
                 
-                // Gestionar eventos de clic en el iframe durante la fase de protección inicial
-                initialProtection.addEventListener('click', function(e) {
-                    // Permitir que el clic llegue al iframe subyacente
-                    if (clicksRemaining > 0) {
-                        // Reducir contador
-                        clicksRemaining--;
-                        clickCounter.textContent = `Clics restantes: ${clicksRemaining}`;
+                // Para manejar redirects fuera de la página, que son otra táctica común de anuncios
+                if (autoCloseEnabled) {
+                    window.addEventListener('beforeunload', function(e) {
+                        // Si esta página intenta redirigir a otra, lo contamos como un anuncio cerrado
+                        adCloseCount++;
+                        countNumber.textContent = adCloseCount;
+                        showNotification();
                         
-                        // Si llegamos a cero, quitar la protección
-                        if (clicksRemaining === 0) {
-                            // Esperar un momento antes de quitar la protección
-                            setTimeout(function() {
-                                initialProtection.classList.add('hidden');
-                            }, 1500);
-                        }
-                    }
-                });
-                
-                // Interceptar redirecciones de página durante la protección inicial
-                window.addEventListener('beforeunload', function(e) {
-                    if (isProtectionEnabled && initialProtection.classList.contains('hidden') === false) {
+                        // Prevenir la redirección
                         e.preventDefault();
                         e.returnValue = '';
-                        showAdBlockedNotification();
-                        return false;
-                    }
-                });
+                        return '';
+                    });
+                }
                 
-                // Monitorear creación de nuevos iframes (común en técnicas de anuncios)
+                // Monitorear iframes creados por scripts (otra táctica de anuncios)
                 const observer = new MutationObserver(function(mutations) {
-                    if (!isProtectionEnabled) return;
+                    if (!autoCloseEnabled) return;
                     
                     mutations.forEach(function(mutation) {
                         if (mutation.addedNodes && mutation.addedNodes.length > 0) {
                             for (let i = 0; i < mutation.addedNodes.length; i++) {
                                 const node = mutation.addedNodes[i];
                                 
-                                // Si se añade un iframe que no es nuestro stream principal
+                                // Si se crea un iframe que no es nuestro stream principal
                                 if (node.nodeName === 'IFRAME' && node !== streamIframe) {
-                                    node.remove();
-                                    showAdBlockedNotification();
+                                    // Incrementar contador
+                                    adCloseCount++;
+                                    countNumber.textContent = adCloseCount;
+                                    showNotification();
+                                    
+                                    // Eliminarlo o limpiar su contenido
+                                    node.src = 'about:blank';
+                                    setTimeout(function() {
+                                        if (node.parentNode) {
+                                            node.parentNode.removeChild(node);
+                                        }
+                                    }, 50);
                                 }
                             }
                         }
@@ -629,22 +615,22 @@
                 });
             }
             
-            // Mostrar notificación de anuncio bloqueado
-            function showAdBlockedNotification() {
+            // Mostrar notificación de anuncio cerrado
+            function showNotification() {
                 adNotification.classList.add('show');
                 
-                // Ocultar después de un tiempo
+                // Ocultar después de un tiempo breve
                 setTimeout(function() {
                     adNotification.classList.remove('show');
-                }, 2000);
+                }, 1500);
             }
             
-            // Botón de pantalla completa
+            // Configurar botón de pantalla completa
             fullscreenBtn.addEventListener('click', function() {
                 toggleFullscreen();
             });
             
-            // Función para toggle fullscreen
+            // Función para cambiar entre modo pantalla completa
             function toggleFullscreen() {
                 const container = document.querySelector('.player-container');
                 
@@ -682,13 +668,22 @@
                 }
             }
             
-            // Cambiar automáticamente al modo de visualización normal después de un tiempo
-            setTimeout(function() {
-                if (clicksRemaining > 0) {
-                    clicksRemaining = 0;
-                    initialProtection.classList.add('hidden');
+            // Para ajustar automáticamente el icono cuando se entra/sale de pantalla completa con otros métodos
+            document.addEventListener('fullscreenchange', updateFullscreenButton);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+            document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+            document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+            
+            function updateFullscreenButton() {
+                if (document.fullscreenElement || 
+                    document.webkitFullscreenElement || 
+                    document.mozFullScreenElement || 
+                    document.msFullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
                 }
-            }, 15000); // 15 segundos como máximo de espera
+            }
         });
     </script>
 </body>
