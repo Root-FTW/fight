@@ -84,6 +84,7 @@
             }
         }
         
+        /* Escudo anti-anuncios inicial */
         .ad-shield {
             position: absolute;
             top: 0;
@@ -141,106 +142,6 @@
             background-color: var(--accent-hover);
         }
         
-        /* Controles inteligentes */
-        .player-controls-area {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 0.8rem;
-            z-index: 5;
-            pointer-events: none;
-        }
-        
-        /* Control de volumen para iOS */
-        .mobile-volume-control {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 1.5rem;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 30;
-            width: 80%;
-            max-width: 300px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .mobile-volume-control.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        .mobile-volume-control h3 {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        
-        .mobile-volume-slider {
-            width: 100%;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: #555;
-            outline: none;
-        }
-        
-        .mobile-volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-        
-        .mobile-volume-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-            border: none;
-        }
-        
-        .mobile-controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 0.5rem;
-        }
-        
-        .mobile-control-btn {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            -webkit-appearance: none;
-        }
-        
-        .mobile-control-btn:hover, .mobile-control-btn:active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
         /* Iframe del stream */
         .iframe-container {
             position: absolute;
@@ -260,144 +161,104 @@
             border: none;
         }
         
-        /* Capa transparente que transmite los clics a áreas específicas */
-        .smart-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-        }
-        
-        .control-zone {
-            position: absolute;
-            z-index: 15;
-            background-color: transparent;
-            pointer-events: auto;
-        }
-        
-        .center-zone {
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-        
-        .control-zone.play-zone {
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 60px;
-        }
-        
-        .control-zone.volume-zone {
-            bottom: 0;
-            left: 60px;
-            width: 60px;
-            height: 60px;
-        }
-        
-        .control-zone.fullscreen-zone {
-            bottom: 0;
-            right: 0;
-            width: 60px;
-            height: 60px;
-        }
-        
-        /* Zona de control para dispositivos táctiles */
-        .touch-control-overlay {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            padding: 8px 12px;
-            border-radius: 50px;
-            z-index: 15;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .smart-overlay:active .touch-control-overlay,
-        .smart-overlay:hover .touch-control-overlay {
-            opacity: 1;
-        }
-        
-        .touch-control-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            -webkit-appearance: none;
-        }
-        
-        .touch-control-btn:hover, .touch-control-btn:active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Zona para indicadores visuales */
-        .visual-feedback {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        @keyframes feedbackPulse {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
-        }
-        
-        .ad-notice {
+        /* Indicador de bloqueo de anuncios */
+        .ad-blocker-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
-            padding: 6px 10px;
-            border-radius: 4px;
             font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 5;
             display: flex;
             align-items: center;
-            gap: 5px;
-            z-index: 25;
+            gap: 4px;
         }
         
-        .ad-notice i {
+        .ad-blocker-badge i {
             color: #f44336;
         }
         
-        /* Estilos para la tarjeta de información */
+        /* Capa para bloquear solo anuncios, no interacciones legítimas */
+        .ad-blocker-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Por encima del iframe pero por debajo de los controles */
+            pointer-events: none; /* No intercepta clics por defecto */
+        }
+        
+        /* Fullscreen control */
+        .fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.2s ease;
+        }
+        
+        .fullscreen-btn:hover, .fullscreen-btn:active {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Notificación de bloqueo de anuncios */
+        .popup-blocked-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .popup-blocked-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .popup-blocked-notification i {
+            color: #f44336;
+        }
+        
+        /* Contador de bloqueos */
+        .block-counter {
+            background-color: #f44336;
+            color: white;
+            font-size: 0.6rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+        }
+        
+        /* Tarjeta de información */
         .info-card {
             background-color: var(--surface-color);
             backdrop-filter: blur(10px);
@@ -450,12 +311,14 @@
             padding: 1.5rem;
             color: var(--text-secondary);
             font-size: 0.8rem;
+            margin-top: auto;
         }
         
         /* Optimizaciones para iOS */
         @supports (-webkit-touch-callout: none) {
-            .touch-control-btn, .mobile-control-btn, .watch-btn {
-                padding: 0.8rem;
+            .fullscreen-btn {
+                width: 44px;
+                height: 44px;
             }
             
             /* Evitar el zoom al tocar controles en iOS */
@@ -464,67 +327,19 @@
             }
         }
         
-        /* Media queries para diferentes tamaños de pantalla */
-        @media (max-width: 768px) {
+        /* Media queries para responsividad */
+        @media (max-width: 480px) {
             .ad-shield h2 {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
+            }
+            
+            .ad-shield p {
+                font-size: 0.8rem;
             }
             
             .watch-btn {
                 padding: 0.7rem 1.3rem;
             }
-            
-            .touch-control-btn {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .control-zone.play-zone,
-            .control-zone.volume-zone,
-            .control-zone.fullscreen-zone {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .visual-feedback {
-                width: 70px;
-                height: 70px;
-                font-size: 1.7rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .ad-shield h2 {
-                font-size: 1.1rem;
-            }
-            
-            .ad-shield p {
-                font-size: 0.8rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .touch-control-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 1rem;
-            }
-            
-            .control-zone.play-zone,
-            .control-zone.volume-zone,
-            .control-zone.fullscreen-zone {
-                width: 45px;
-                height: 45px;
-            }
-        }
-        
-        /* Prevencion de seleccion no deseada en dispositivos taciles */
-        .noselect {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
         }
     </style>
 </head>
@@ -538,7 +353,7 @@
     
     <main>
         <section class="player-section">
-            <div class="player-container noselect">
+            <div class="player-container">
                 <!-- Iframe del stream -->
                 <div class="iframe-container">
                     <iframe 
@@ -551,7 +366,21 @@
                     ></iframe>
                 </div>
                 
-                <!-- Escudo inicial contra anuncios -->
+                <!-- Capa para bloquear solo anuncios, no interacciones legítimas -->
+                <div class="ad-blocker-layer" id="adBlockerLayer"></div>
+                
+                <!-- Botón de pantalla completa propio -->
+                <button class="fullscreen-btn" id="fullscreenBtn">
+                    <i class="fas fa-expand"></i>
+                </button>
+                
+                <!-- Indicador de bloqueo de anuncios -->
+                <div class="ad-blocker-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Protección activa</span>
+                </div>
+                
+                <!-- Escudo anti-anuncios inicial -->
                 <div class="ad-shield" id="adShield">
                     <h2>Stream protegido contra anuncios</h2>
                     <p>Hemos implementado medidas para evitar anuncios emergentes mientras disfrutas del contenido.</p>
@@ -560,59 +389,14 @@
                         Ver Stream
                     </button>
                 </div>
-                
-                <!-- Overlay inteligente que controla los clics -->
-                <div class="smart-overlay" id="smartOverlay">
-                    <!-- Zonas de control (pasan los clics directamente al iframe en áreas específicas) -->
-                    <div class="control-zone center-zone" id="centerZone"></div>
-                    <div class="control-zone play-zone" id="playZone"></div>
-                    <div class="control-zone volume-zone" id="volumeZone"></div>
-                    <div class="control-zone fullscreen-zone" id="fullscreenZone"></div>
-                    
-                    <!-- Controles táctiles optimizados para móviles -->
-                    <div class="touch-control-overlay" id="touchControls">
-                        <button class="touch-control-btn" id="playTouchBtn">
-                            <i class="fas fa-play" id="playIcon"></i>
-                        </button>
-                        <button class="touch-control-btn" id="volumeTouchBtn">
-                            <i class="fas fa-volume-mute" id="volumeIcon"></i>
-                        </button>
-                        <button class="touch-control-btn" id="fullscreenTouchBtn">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Feedback visual -->
-                <div class="visual-feedback" id="visualFeedback"></div>
-                
-                <!-- Control de volumen para móviles -->
-                <div class="mobile-volume-control" id="mobileVolumeControl">
-                    <h3>Volumen</h3>
-                    <input type="range" min="0" max="100" value="0" class="mobile-volume-slider" id="mobileVolumeSlider">
-                    <div class="mobile-controls">
-                        <button class="mobile-control-btn" id="muteBtn">
-                            <i class="fas fa-volume-mute"></i>
-                        </button>
-                        <button class="mobile-control-btn" id="closeVolumeControlBtn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Indicador de protección anti-anuncios -->
-                <div class="ad-notice">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Protección activa</span>
-                </div>
             </div>
             
             <div class="info-card">
                 <h2><i class="fas fa-info-circle"></i> Información</h2>
                 <p>Este stream está optimizado para dispositivos móviles y protegido contra anuncios.</p>
                 <ul class="tip-list">
-                    <li><i class="fas fa-check-circle"></i> <span>Toca en el centro del reproductor para reproducir/pausar.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span>Usa los controles en pantalla para ajustar el volumen y la pantalla completa.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Utiliza los controles originales del reproductor para controlar el volumen y reproducción.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Usa el botón de pantalla completa en la esquina inferior derecha para expandir el video.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span>Si experimentas problemas, intenta actualizar la página.</span></li>
                 </ul>
             </div>
@@ -622,218 +406,64 @@
     <footer>
         <p>&copy; 2025 StreamView | Una experiencia de visualización premium</p>
     </footer>
+    
+    <!-- Notificación de bloqueo de popups -->
+    <div class="popup-blocked-notification" id="popupNotification">
+        <i class="fas fa-ban"></i>
+        <span>Anuncio bloqueado</span>
+        <div class="block-counter" id="blockCounter">0</div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Referencias a elementos del DOM
+            const streamIframe = document.getElementById('streamIframe');
             const adShield = document.getElementById('adShield');
             const watchButton = document.getElementById('watchButton');
-            const streamIframe = document.getElementById('streamIframe');
-            const smartOverlay = document.getElementById('smartOverlay');
-            const centerZone = document.getElementById('centerZone');
-            const playZone = document.getElementById('playZone');
-            const volumeZone = document.getElementById('volumeZone');
-            const fullscreenZone = document.getElementById('fullscreenZone');
-            const touchControls = document.getElementById('touchControls');
-            const playTouchBtn = document.getElementById('playTouchBtn');
-            const volumeTouchBtn = document.getElementById('volumeTouchBtn');
-            const fullscreenTouchBtn = document.getElementById('fullscreenTouchBtn');
-            const playIcon = document.getElementById('playIcon');
-            const volumeIcon = document.getElementById('volumeIcon');
-            const visualFeedback = document.getElementById('visualFeedback');
-            const mobileVolumeControl = document.getElementById('mobileVolumeControl');
-            const mobileVolumeSlider = document.getElementById('mobileVolumeSlider');
-            const muteBtn = document.getElementById('muteBtn');
-            const closeVolumeControlBtn = document.getElementById('closeVolumeControlBtn');
+            const adBlockerLayer = document.getElementById('adBlockerLayer');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const popupNotification = document.getElementById('popupNotification');
+            const blockCounter = document.getElementById('blockCounter');
             
             // Variables de estado
-            let isPlaying = false;
-            let isMuted = true;
-            let volume = 50;
-            let lastTouchPosition = { x: 0, y: 0 };
+            let popupBlockCount = 0;
             let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             let isAndroid = /Android/.test(navigator.userAgent);
             let isMobile = isIOS || isAndroid || window.innerWidth <= 768;
-            let popupBlockCount = 0;
             
-            // Iniciar reproductor
+            // Iniciar visualización del stream
             watchButton.addEventListener('click', function() {
+                // Ocultar escudo
                 adShield.classList.add('hidden');
+                
+                // Configurar bloqueo de anuncios
+                setupPopupBlocker();
+                
+                // Inicializar la página como se esperaría
                 setTimeout(() => {
-                    setupStreamControls();
+                    // En iOS, a veces necesitas un clic inicial para activar el audio
+                    if (isIOS) {
+                        try {
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            
+                            streamIframe.dispatchEvent(clickEvent);
+                        } catch (e) {
+                            console.log('Error en clic inicial:', e);
+                        }
+                    }
                 }, 500);
             });
             
-            // Configurar controles de stream optimizados para dispositivos táctiles
-            function setupStreamControls() {
-                // Inicializar el controlador de popups
-                setupPopupBlocker();
-                
-                // Configurar zonas de control
-                setupControlZones();
-                
-                // Configurar controles táctiles
-                setupTouchControls();
-                
-                // Activar reproductor (puede estar en pausa al principio)
-                setTimeout(() => {
-                    simulatePlay();
-                    
-                    // En iOS, necesitamos activar el audio tan pronto como sea posible
-                    if (isIOS) {
-                        setTimeout(() => {
-                            simulateVolumeChange();
-                        }, 500);
-                    }
-                }, 1000);
-            }
+            // Configurar el botón de pantalla completa
+            fullscreenBtn.addEventListener('click', function() {
+                toggleFullscreen();
+            });
             
-            // Configurar zonas de control (pasan los clics directamente al iframe en áreas específicas)
-            function setupControlZones() {
-                // Zona central - controla play/pause
-                centerZone.addEventListener('click', function(e) {
-                    // Evitar que el clic cause popups
-                    e.stopPropagation();
-                    
-                    // Solo procesar clic central si no es cerca de los controles
-                    const rect = centerZone.getBoundingClientRect();
-                    const y = e.clientY - rect.top;
-                    
-                    // Si es en la parte superior de la pantalla, ignorar
-                    if (y < rect.height * 0.2) return;
-                    
-                    // Si es en la parte inferior de la pantalla donde están los controles, ignorar
-                    if (y > rect.height * 0.8) return;
-                    
-                    // En caso contrario, es un clic en el centro, toggle play/pause
-                    togglePlayPause();
-                    
-                    // Almacenar posición del último toque
-                    lastTouchPosition = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-                });
-                
-                // Zona de play
-                playZone.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    simulatePlayClick();
-                });
-                
-                // Zona de volumen
-                volumeZone.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    // En dispositivos móviles, mostrar control de volumen personalizado
-                    if (isMobile) {
-                        toggleVolumeControl();
-                    } else {
-                        simulateVolumeClick();
-                    }
-                });
-                
-                // Zona de pantalla completa
-                fullscreenZone.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleFullscreen();
-                });
-                
-                // Doble clic para pantalla completa
-                let lastClickTime = 0;
-                centerZone.addEventListener('click', function(e) {
-                    const currentTime = new Date().getTime();
-                    if (currentTime - lastClickTime < 300) {
-                        toggleFullscreen();
-                    }
-                    lastClickTime = currentTime;
-                });
-            }
-            
-            // Configurar controles táctiles
-            function setupTouchControls() {
-                // Botón play/pause
-                playTouchBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    togglePlayPause();
-                });
-                
-                // Botón de volumen
-                volumeTouchBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    // En dispositivos móviles, mostrar control de volumen personalizado
-                    toggleVolumeControl();
-                });
-                
-                // Botón de pantalla completa
-                fullscreenTouchBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleFullscreen();
-                });
-                
-                // Control de volumen móvil
-                mobileVolumeSlider.addEventListener('input', function() {
-                    setVolume(this.value);
-                });
-                
-                muteBtn.addEventListener('click', function() {
-                    toggleMute();
-                });
-                
-                closeVolumeControlBtn.addEventListener('click', function() {
-                    mobileVolumeControl.classList.remove('active');
-                });
-            }
-            
-            // Toggle play/pause
-            function togglePlayPause() {
-                isPlaying = !isPlaying;
-                
-                // Actualizar la interfaz visual
-                playIcon.className = isPlaying ? "fas fa-pause" : "fas fa-play";
-                
-                // Simular clic en play en el reproductor original
-                simulatePlayClick();
-                
-                // Mostrar feedback visual
-                showFeedback(isPlaying ? "fa-pause" : "fa-play");
-            }
-            
-            // Mostrar/ocultar control de volumen en móviles
-            function toggleVolumeControl() {
-                mobileVolumeControl.classList.toggle('active');
-            }
-            
-            // Toggle mute
-            function toggleMute() {
-                isMuted = !isMuted;
-                
-                // Actualizar interfaz
-                volumeIcon.className = isMuted ? "fas fa-volume-mute" : "fas fa-volume-up";
-                mobileVolumeSlider.value = isMuted ? 0 : volume;
-                
-                // Simular clic en el control de volumen original
-                simulateVolumeClick();
-                
-                // Mostrar feedback visual
-                showFeedback(isMuted ? "fa-volume-mute" : "fa-volume-up");
-            }
-            
-            // Ajustar volumen
-            function setVolume(value) {
-                volume = value;
-                isMuted = value === 0;
-                
-                // Actualizar interfaz
-                volumeIcon.className = isMuted ? "fas fa-volume-mute" : "fas fa-volume-up";
-                
-                // Simular cambio de volumen en el reproductor original
-                simulateVolumeChange(value);
-                
-                // Mostrar feedback visual
-                const icon = isMuted ? "fa-volume-mute" : value < 50 ? "fa-volume-down" : "fa-volume-up";
-                showFeedback(icon);
-            }
-            
-            // Toggle pantalla completa
+            // Función para alternar pantalla completa
             function toggleFullscreen() {
                 const container = document.querySelector('.player-container');
                 
@@ -853,8 +483,8 @@
                         container.msRequestFullscreen();
                     }
                     
-                    // Mostrar feedback visual
-                    showFeedback("fa-compress");
+                    // Cambiar icono
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
                     
                 } else {
                     // Salir de pantalla completa
@@ -868,196 +498,86 @@
                         document.msExitFullscreen();
                     }
                     
-                    // Mostrar feedback visual
-                    showFeedback("fa-expand");
+                    // Cambiar icono
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
                 }
             }
             
-            // Mostrar feedback visual para una acción
-            function showFeedback(iconClass) {
-                // Crear el icono
-                visualFeedback.innerHTML = `<i class="fas ${iconClass}"></i>`;
-                
-                // Mostrar con animación
-                visualFeedback.style.animation = 'none';
-                void visualFeedback.offsetWidth; // Trigger reflow
-                visualFeedback.style.animation = 'feedbackPulse 0.8s ease forwards';
-            }
-            
-            // --- Funciones para simular interacciones con el reproductor original ---
-            
-            // Simular clic en el botón de play del reproductor original
-            function simulatePlayClick() {
-                // Capas de protección: Establecer un timeout para dejar tiempo al reproductor
-                setTimeout(() => {
-                    try {
-                        // Método 1: Simular un clic en el centro del reproductor
-                        const rect = streamIframe.getBoundingClientRect();
-                        const centerX = rect.width / 2;
-                        const centerY = rect.height / 2;
-                        
-                        // Crear evento de MouseEvent programáticamente
-                        const clickEvent = new MouseEvent('click', {
-                            bubbles: true,
-                            cancelable: true,
-                            view: window
-                        });
-                        
-                        // Aplicar directamente al centro del iframe
-                        const centerPoint = document.elementFromPoint(
-                            rect.left + centerX,
-                            rect.top + centerY
-                        );
-                        
-                        if (centerPoint) {
-                            // Para evitar popups, desactivar temporalmente el bloqueador
-                            const originalWindowOpen = window.open;
-                            window.open = function() { return null; };
-                            
-                            // Enviar clic al elemento
-                            centerPoint.dispatchEvent(clickEvent);
-                            
-                            // Restaurar después
-                            setTimeout(() => {
-                                window.open = originalWindowOpen;
-                            }, 100);
-                        }
-                        
-                        // Método 2: Usar postMessage para comunicarse con el iframe
-                        streamIframe.contentWindow.postMessage({
-                            action: 'togglePlayPause'
-                        }, '*');
-                        
-                    } catch (e) {
-                        console.log('Error simulando clic en play:', e);
-                    }
-                }, 100);
-            }
-            
-            // Simular clic en el botón de volumen del reproductor original
-            function simulateVolumeClick() {
-                try {
-                    // Posición aproximada del control de volumen en la mayoría de los reproductores
-                    const rect = streamIframe.getBoundingClientRect();
-                    const volumeX = rect.left + (rect.width * 0.15); // 15% desde la izquierda
-                    const volumeY = rect.top + (rect.height * 0.9);  // 90% desde arriba
-                    
-                    // Crear evento programáticamente
-                    const clickEvent = new MouseEvent('click', {
-                        bubbles: true,
-                        cancelable: true,
-                        view: window
-                    });
-                    
-                    // Encontrar el elemento en esa posición
-                    const volumePoint = document.elementFromPoint(volumeX, volumeY);
-                    
-                    if (volumePoint) {
-                        // Desactivar bloqueador temporalmente
-                        const originalWindowOpen = window.open;
-                        window.open = function() { return null; };
-                        
-                        // Enviar clic
-                        volumePoint.dispatchEvent(clickEvent);
-                        
-                        // Restaurar después
-                        setTimeout(() => {
-                            window.open = originalWindowOpen;
-                        }, 100);
-                    }
-                    
-                    // También intentar postMessage
-                    streamIframe.contentWindow.postMessage({
-                        action: 'toggleMute'
-                    }, '*');
-                    
-                } catch (e) {
-                    console.log('Error simulando clic en volumen:', e);
-                }
-            }
-            
-            // Simular cambio de volumen en el reproductor original
-            function simulateVolumeChange(value = 80) {
-                try {
-                    // Intentar postMessage primero
-                    streamIframe.contentWindow.postMessage({
-                        action: 'setVolume',
-                        value: value / 100
-                    }, '*');
-                    
-                    // Como plan B, si el postMessage no funciona, manipular directamente elementos del iframe
-                    // Esto es más difícil y depende mucho del reproductor específico
-                } catch (e) {
-                    console.log('Error simulando cambio de volumen:', e);
-                }
-            }
-            
-            // Simular reproducción inicial
-            function simulatePlay() {
-                try {
-                    // Primero intentar un clic en el centro
-                    const rect = streamIframe.getBoundingClientRect();
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const clickEvent = new MouseEvent('click', {
-                        bubbles: true,
-                        cancelable: true,
-                        view: window
-                    });
-                    
-                    const centerPoint = document.elementFromPoint(
-                        rect.left + centerX,
-                        rect.top + centerY
-                    );
-                    
-                    if (centerPoint) {
-                        // Desactivar bloqueador temporalmente
-                        const originalWindowOpen = window.open;
-                        window.open = function() { return null; };
-                        
-                        // Enviar clic
-                        centerPoint.dispatchEvent(clickEvent);
-                        
-                        // Actualizar estado visual
-                        isPlaying = true;
-                        playIcon.className = "fas fa-pause";
-                        
-                        // Restaurar después
-                        setTimeout(() => {
-                            window.open = originalWindowOpen;
-                        }, 100);
-                    }
-                } catch (e) {
-                    console.log('Error simulando reproducción inicial:', e);
-                }
-            }
-            
-            // --- Sistema de bloqueo de popups ---
-            
+            // Configurar sistema de bloqueo de popups más inteligente
             function setupPopupBlocker() {
-                // 1. Sobrescribir window.open
+                // 1. Sobrescribir window.open (principal fuente de popups)
                 const originalWindowOpen = window.open;
                 window.open = function() {
+                    // Incrementar el contador
                     popupBlockCount++;
-                    console.log(`Popup bloqueado (${popupBlockCount})`);
-                    return null;
+                    blockCounter.textContent = popupBlockCount;
+                    
+                    // Mostrar notificación
+                    showPopupNotification();
+                    
+                    // Devolver un objeto falso en lugar de una referencia a ventana
+                    return {
+                        focus: function() {},
+                        blur: function() {},
+                        close: function() {},
+                        postMessage: function() {},
+                        location: { href: '' }
+                    };
                 };
                 
-                // 2. Interceptar eventos de creación de nuevos elementos
+                // 2. Configurar manejo de navegación fuera de la página
+                window.addEventListener('beforeunload', function(e) {
+                    // Solo prevenir salidas no intencionadas por anuncios
+                    // Esto permitirá el fullscreen y otras acciones legítimas
+                    const currentTime = new Date().getTime();
+                    const timeSinceLastAction = currentTime - lastActionTime;
+                    
+                    // Si ha pasado poco tiempo desde la última acción del usuario,
+                    // probablemente sea legítimo - sino, podría ser un redirect de anuncio
+                    if (timeSinceLastAction > 1000) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        
+                        // Incrementar contador
+                        popupBlockCount++;
+                        blockCounter.textContent = popupBlockCount;
+                        showPopupNotification();
+                    }
+                });
+                
+                // 3. Monitorear y prevenir nuevos iframes (común en ataques de anuncios)
                 const observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.addedNodes && mutation.addedNodes.length > 0) {
                             for (let i = 0; i < mutation.addedNodes.length; i++) {
                                 const node = mutation.addedNodes[i];
-                                // Eliminar cualquier iframe excepto el nuestro
+                                
+                                // Si se añade un iframe que no es nuestro stream, eliminarlo
                                 if (node.nodeName === 'IFRAME' && node !== streamIframe) {
                                     node.parentNode.removeChild(node);
+                                    
+                                    // Incrementar contador
+                                    popupBlockCount++;
+                                    blockCounter.textContent = popupBlockCount;
+                                    showPopupNotification();
                                 }
-                                // Eliminar enlaces con target="_blank"
-                                if (node.nodeName === 'A' && node.getAttribute('target') === '_blank') {
-                                    node.setAttribute('target', '_self');
+                                
+                                // Prevenir links maliciosos
+                                if (node.nodeName === 'A') {
+                                    // Siempre forzar noopener y noreferrer
                                     node.setAttribute('rel', 'noopener noreferrer');
+                                    
+                                    // Si abre en nueva ventana, interceptar
+                                    if (node.getAttribute('target') === '_blank') {
+                                        node.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            
+                                            // Incrementar contador
+                                            popupBlockCount++;
+                                            blockCounter.textContent = popupBlockCount;
+                                            showPopupNotification();
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -1069,25 +589,44 @@
                     subtree: true
                 });
                 
-                // 3. Interceptar eventos beforeunload para evitar redirects
-                window.addEventListener('beforeunload', function(e) {
-                    if (!confirm('¿Seguro que quieres salir?')) {
-                        e.preventDefault();
-                        e.returnValue = '';
-                    }
-                });
+                // 4. Registrar la última acción del usuario para distinguir acciones legítimas
+                let lastActionTime = new Date().getTime();
                 
-                // 4. Prevenir eventos de contextmenu (clic derecho) en el reproductor
-                smartOverlay.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
+                ['click', 'touchstart', 'keydown'].forEach(function(eventType) {
+                    document.addEventListener(eventType, function() {
+                        lastActionTime = new Date().getTime();
+                    });
                 });
             }
             
-            // Detectar y manejar cambios de orientación en dispositivos móviles
-            window.addEventListener('resize', function() {
-                // Actualizar estado de dispositivo móvil
-                isMobile = isIOS || isAndroid || window.innerWidth <= 768;
-            });
+            // Mostrar notificación de bloqueo de anuncios
+            function showPopupNotification() {
+                popupNotification.classList.add('show');
+                
+                // Ocultar después de 3 segundos
+                setTimeout(function() {
+                    popupNotification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Ajustes basados en si estamos en pantalla completa
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+            
+            function handleFullscreenChange() {
+                const isFullscreen = !!document.fullscreenElement || 
+                                   !!document.webkitFullscreenElement || 
+                                   !!document.mozFullScreenElement || 
+                                   !!document.msFullscreenElement;
+                
+                if (isFullscreen) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                }
+            }
         });
     </script>
 </body>
