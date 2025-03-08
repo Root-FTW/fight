@@ -53,6 +53,56 @@
             width: 100%;
             height: 100%;
             border: none;
+            z-index: 1;
+        }
+        
+        /* Overlay para interceptar clics */
+        .ad-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .ad-shield.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .ad-shield-message {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 80%;
+        }
+        
+        .ad-shield-text {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ad-shield-button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .ad-shield-button:hover {
+            background-color: #e64a19;
         }
         
         footer {
@@ -65,6 +115,15 @@
         .ad-warning {
             background-color: rgba(255, 87, 34, 0.1);
             border-left: 4px solid #ff5722;
+            padding: 0.5rem 1rem;
+            margin: 1rem auto;
+            max-width: 1200px;
+            border-radius: 4px;
+        }
+        
+        .instructions {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196f3;
             padding: 0.5rem 1rem;
             margin: 1rem auto;
             max-width: 1200px;
@@ -102,13 +161,25 @@
     </header>
     
     <div class="ad-warning">
-        <p>⚠️ Aviso: El stream original contiene anuncios que pueden abrirse en nuevas pestañas. Se ha intentado minimizarlos.</p>
+        <p>⚠️ Aviso: El stream original contiene anuncios que pueden abrirse en nuevas pestañas. Se ha implementado una protección anti-anuncios.</p>
+    </div>
+    
+    <div class="instructions">
+        <p>ℹ️ Instrucciones: Haz clic en el botón "Acceder al Stream" cuando estés listo. Espera unos segundos si aparecen anuncios. Para controlar el reproductor, haz doble clic para pantalla completa o usa los controles del reproductor.</p>
     </div>
     
     <main>
         <div class="stream-container">
-            <!-- Eliminamos sandbox y añadimos más atributos para mejorar compatibilidad -->
+            <!-- Protección anti-popups -->
+            <div class="ad-shield" id="adShield">
+                <div class="ad-shield-message">
+                    <p class="ad-shield-text">Protección contra anuncios activada</p>
+                    <button class="ad-shield-button" id="accessStreamBtn">Acceder al Stream</button>
+                </div>
+            </div>
+            
             <iframe 
+                id="streamIframe"
                 src="https://sons-stream.com/tvon.php?hd=112" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen
@@ -127,20 +198,64 @@
     </footer>
 
     <script>
-        // Script para intentar manejar errores de iframe
-        window.addEventListener('load', function() {
-            const iframe = document.querySelector('iframe');
+        // Configuración anti-popups
+        document.addEventListener('DOMContentLoaded', function() {
+            const adShield = document.getElementById('adShield');
+            const accessStreamBtn = document.getElementById('accessStreamBtn');
+            const streamIframe = document.getElementById('streamIframe');
             
-            // Verificar si el iframe se cargó correctamente
-            iframe.addEventListener('error', function() {
-                console.log('Error al cargar el iframe');
-                iframe.style.display = 'none';
-                document.querySelector('.fallback-button').style.display = 'block';
-            });
+            // Contador de ventanas emergentes bloqueadas
+            let popupBlockCount = 0;
             
-            // Añadir evento para mensajes de error desde el iframe
-            window.addEventListener('message', function(event) {
-                console.log('Mensaje recibido:', event.data);
+            // Función para bloquear ventanas emergentes
+            function blockPopups() {
+                // Guardar referencia a window.open
+                const originalWindowOpen = window.open;
+                
+                // Sobrescribir window.open
+                window.open = function() {
+                    popupBlockCount++;
+                    console.log(`Popup bloqueado (${popupBlockCount})`);
+                    
+                    // Devolver un objeto falso para evitar errores
+                    return {
+                        focus: function() {},
+                        blur: function() {},
+                        close: function() {}
+                    };
+                };
+                
+                // Intentar detectar y cerrar popups a través del iframe
+                setInterval(function() {
+                    try {
+                        const iframeWindow = streamIframe.contentWindow;
+                        if (iframeWindow && iframeWindow.opener) {
+                            iframeWindow.opener = null;
+                        }
+                    } catch (e) {
+                        // Error de acceso por cross-origin, es normal
+                    }
+                }, 1000);
+            }
+            
+            // Activar bloqueo de popups
+            blockPopups();
+            
+            // Manejar clic en el botón de acceso
+            accessStreamBtn.addEventListener('click', function() {
+                // Ocultar el escudo anti-anuncios
+                adShield.classList.add('hidden');
+                
+                // Reactivar el escudo después de interactuar con el reproductor
+                setTimeout(function() {
+                    const reactivateShield = function() {
+                        adShield.classList.remove('hidden');
+                        document.removeEventListener('click', reactivateShield);
+                    };
+                    
+                    // Escuchar un clic en cualquier parte de la página
+                    document.addEventListener('click', reactivateShield);
+                }, 30000); // Mantener el acceso al reproductor por 30 segundos
             });
         });
     </script>
